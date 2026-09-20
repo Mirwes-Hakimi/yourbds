@@ -24,6 +24,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { next } from "@vercel/functions";
+import { CITY_PAGES } from "./src/data/cityPages.js";
 
 const SITE_URL = "https://www.yourbds.com";
 const DEFAULT_IMAGE = `${SITE_URL}/bestDrivingSchoo.png`;
@@ -107,6 +108,15 @@ const PAGES = {
     description: "How Best Driving School collects, uses, and protects your personal information.",
   },
 };
+
+// City pages are generated from the same data file the React page uses
+// (src/data/cityPages.js), so their tags can never drift out of sync.
+for (const city of CITY_PAGES) {
+  PAGES[`/locations/${city.slug}`] = {
+    title: city.title,
+    description: city.description,
+  };
+}
 
 // Matches known crawlers that read raw HTML without executing
 // JavaScript — social link-preview bots and some search/SEO tools.

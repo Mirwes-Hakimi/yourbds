@@ -19,6 +19,7 @@ import AdultCourse      from "./pages/AdultCourse";      // /services/adult-driv
 import DmvInfo          from "./pages/DmvInfo";          // /services/dmv-test-preparation
 import DmvCarRentalPage from "./pages/DmvCarRentalPage"; // /services/dmv-test-car-rental
 import LocationsPage    from "./pages/LocationsPage";    // /locations
+import CityPage         from "./pages/CityPage";         // /locations/:citySlug
 import AboutPage        from "./pages/AboutPage";        // /about
 import FaqPage          from "./pages/FaqPage";          // /faq
 import PermitPractice   from "./pages/PermitPractice";   // /practice
@@ -77,6 +78,8 @@ function App() {
         <Route path="/dmv"          element={<Navigate to="/services/dmv-test-preparation" replace />} />
 
         <Route path="/locations"    element={<LocationsPage />} />
+        {/* One template for every city page — content comes from src/data/cityPages.js */}
+        <Route path="/locations/:citySlug" element={<CityPage />} />
         <Route path="/about"        element={<AboutPage />} />
         <Route path="/faq"          element={<FaqPage />} />
         <Route path="/practice"     element={<PermitPractice />} />

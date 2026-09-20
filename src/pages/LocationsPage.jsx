@@ -2,14 +2,15 @@ import { Link } from "react-router-dom";
 import styles from "../styles/InfoPage.module.css";
 import { BUSINESS } from "../siteConfig";
 import SEOHead from "../components/SEOHead";
+import { getCityPageByName } from "../data/cityPages";
 import { buildLocalBusinessSchema, buildBreadcrumbSchema } from "../lib/structuredData";
 
 // Locations hub — shown at /locations. Lists real service-area cities
 // from siteConfig.js (kept in sync with Packages.jsx's SERVED_CITIES).
-// Dedicated per-city pages (e.g. /locations/hayward) aren't built yet —
-// each one needs genuinely unique, real local content (not the same
-// text with the city name swapped), which requires city-specific facts
-// not yet available. See DOMAIN-MIGRATION.md.
+// Cities that have a dedicated page (src/data/cityPages.js) get a card
+// that links to it; the rest stay as plain cards. A city only gets its
+// own page once it has genuinely unique, real local content — never the
+// same text with the city name swapped.
 export default function LocationsPage() {
   return (
     <div className={styles.page}>
@@ -43,14 +44,28 @@ export default function LocationsPage() {
       <div className={styles.content}>
         <h2 className={styles.sectionHeading}>Cities We Serve</h2>
         <div className={styles.grid}>
-          {BUSINESS.serviceAreas.map((city) => (
-            <div key={city} className={styles.card}>
-              <p className={styles.cardTitle}>{city}, CA</p>
-              <p className={styles.cardText}>
-                Behind-the-wheel driving lessons and DMV test packages available.
-              </p>
-            </div>
-          ))}
+          {BUSINESS.serviceAreas.map((city) => {
+            const page = getCityPageByName(city);
+            const card = (
+              <>
+                <p className={styles.cardTitle}>{city}, CA</p>
+                <p className={styles.cardText}>
+                  {page
+                    ? `${page.summary} Learn more →`
+                    : "Behind-the-wheel driving lessons and DMV test packages available."}
+                </p>
+              </>
+            );
+            return page ? (
+              <Link key={city} to={`/locations/${page.slug}`} className={styles.card}>
+                {card}
+              </Link>
+            ) : (
+              <div key={city} className={styles.card}>
+                {card}
+              </div>
+            );
+          })}
         </div>
 
         <div className={styles.cta}>
