@@ -46,6 +46,6 @@ export const faqs = [
   },
   {
     q: "Can I pay online?",
-    a: "Yes. At checkout you can choose to pay online by card right away, or pay later at your first session — whichever you prefer.",
+    a: "Yes. At checkout you can choose to pay online by card right away, or pay later at your first session — whichever you prefer. You can also pay with Zelle at info@yourbds.com; just put the student's name in the memo.",
   },
 ];

@@ -57,13 +57,38 @@ export const BUSINESS = {
     "Sacramento", "Folsom", "Elk Grove", "Roseville", "Rancho Cordova",
     "Citrus Heights", "Rocklin",
   ],
-  // TODO: business hours aren't in the codebase anywhere yet — add the
-  // real hours here once confirmed (used for LocalBusiness openingHours
-  // structured data, which currently omits this field rather than guess).
-  hours: null,
+  // Business hours: 8 AM – 7 PM, every day (confirmed by the owner).
+  // `hours` is in schema.org format for Google's LocalBusiness data
+  // (24-hour "HH:MM" times); `hoursText` is the human-readable version
+  // shown in the footer and on the Contact page. Change both together.
+  hours: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday", "Tuesday", "Wednesday", "Thursday",
+        "Friday", "Saturday", "Sunday",
+      ],
+      opens: "08:00",
+      closes: "19:00",
+    },
+  ],
+  hoursText: "Daily, 8:00 AM – 7:00 PM",
   // Used in the footer and Organization "sameAs" structured data.
   socialProfiles: [
     { label: "Instagram", url: "https://www.instagram.com/yourbestdrivingschool/" },
     { label: "Facebook", url: "https://www.facebook.com/people/Best-Driving-School/61591633250750/" },
   ],
+};
+
+// Zelle payment details shown after a customer books (see
+// src/components/ZelleInfo.jsx). Zelle payments are NOT confirmed
+// automatically like Stripe card payments — the owner matches the payment
+// (by name/memo) in the bank app and treats it like "paid at session".
+// qrImage: path of the QR picture inside /public. It's cropped to just the
+// QR + Zelle logo on purpose (no account digits). Set to null to show the
+// email instructions without a QR image.
+export const ZELLE = {
+  recipientName: "Best Driving School LLC",
+  email: "info@yourbds.com",
+  qrImage: "/zelle-qr.jpg",
 };

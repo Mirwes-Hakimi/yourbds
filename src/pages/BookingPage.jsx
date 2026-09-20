@@ -19,6 +19,7 @@ import { trackAppointmentScheduled } from "../lib/adPixel";
 import { trackGoogleAdsConversion } from "../lib/googleAdsPixel";
 import styles from "../styles/BookingPage.module.css";
 import SEOHead from "../components/SEOHead";
+import ZelleInfo from "../components/ZelleInfo";
 
 export default function BookingPage() {
   const { state, search } = useLocation();
@@ -385,6 +386,9 @@ const endTime = addMinutesToTime(startTime, duration);
             No payment is due now, you'll pay at your first session.
           </p>
 
+          {/* Optional: customers who'd rather pay ahead by Zelle */}
+          <ZelleInfo amount={price} />
+
           <div className={styles.confirmSessions}>
             {bookingResult.sessions.map((s) => (
               <div key={s.sessionNumber} className={styles.confirmSessionRow}>
@@ -611,7 +615,7 @@ const endTime = addMinutesToTime(startTime, duration);
             />
             <div>
               <strong>Pay Later</strong>
-              <span>No payment now, pay at your first session.</span>
+              <span>No payment now, pay at your first session (or send a Zelle payment after booking).</span>
             </div>
           </label>
 

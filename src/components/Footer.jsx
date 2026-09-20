@@ -28,6 +28,7 @@ export default function Footer() {
             <br />
             {BUSINESS.addressLocality}, {BUSINESS.addressRegion} {BUSINESS.postalCode}
           </p>
+          <p className={styles.text}>Hours: {BUSINESS.hoursText}</p>
           {BUSINESS.socialProfiles.length > 0 && (
             <div className={styles.socialRow}>
               {BUSINESS.socialProfiles.map((profile) => {

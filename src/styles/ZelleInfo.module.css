@@ -1,0 +1,38 @@
+/* Zelle payment box on the booking confirmation panel */
+.box {
+  margin: 0 0 1.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  border-radius: 12px;
+  background: rgba(249, 115, 22, 0.06);
+  text-align: center;
+}
+
+.title {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+  color: #f97316;
+}
+
+.text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #d1d5db;
+}
+
+.text strong {
+  color: #fff;
+}
+
+/* White backing so the QR code stays scannable on the dark theme */
+.qr {
+  display: block;
+  margin: 1rem auto 0;
+  padding: 8px;
+  background: #fff;
+  border-radius: 8px;
+  width: 260px;
+  max-width: 100%;
+  height: auto;
+}

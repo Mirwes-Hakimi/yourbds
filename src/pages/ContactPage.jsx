@@ -9,7 +9,7 @@ import {
   EMAILJS_PUBLIC_KEY,
   SCHOOL_NOTIFY_EMAIL,
 } from "../emailjs.config";
-import { SCHOOL_PHONE, SCHOOL_PHONE_TEL, SCHOOL_ADDRESS } from "../siteConfig";
+import { SCHOOL_PHONE, SCHOOL_PHONE_TEL, SCHOOL_ADDRESS, BUSINESS } from "../siteConfig";
 import SEOHead from "../components/SEOHead";
 import { buildLocalBusinessSchema, buildBreadcrumbSchema } from "../lib/structuredData";
 
@@ -114,6 +114,12 @@ export default function ContactPage() {
                 {SCHOOL_ADDRESS}
               </a>
             </p>
+          </div>
+
+          <div className={infoStyles.card}>
+            <span className={infoStyles.cardIcon}>🕗</span>
+            <p className={infoStyles.cardTitle}>Hours</p>
+            <p className={infoStyles.cardText}>{BUSINESS.hoursText}</p>
           </div>
 
           <div className={infoStyles.card}>
