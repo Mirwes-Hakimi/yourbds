@@ -22,75 +22,10 @@
 //   middleware.js imports it at the edge.
 // ─────────────────────────────────────────────────────────────
 
-// Link to the DMV's own directory, used when a city has no dedicated
-// field-office page we can point to.
-export const DMV_LOCATIONS_URL = "https://www.dmv.ca.gov/portal/locations/";
+import { OFFICES, DMV_LOCATIONS_URL } from "./dmvOffices.js";
 
-// Shared DMV office records, so an office appearing on more than one
-// city's page (e.g. Concord, used by both Concord and Walnut Creek)
-// only has its address written once.
-const OFFICES = {
-  sanFrancisco: {
-    name: "San Francisco DMV field office",
-    address: "1377 Fell Street, San Francisco, CA 94117",
-    url: "https://www.dmv.ca.gov/portal/field-office/san-francisco/",
-  },
-  concord: {
-    name: "Concord DMV field office",
-    address: "2070 Diamond Boulevard, Concord, CA 94520",
-    url: "https://www.dmv.ca.gov/portal/field-office/concord/",
-  },
-  pleasanton: {
-    name: "Pleasanton DMV field office",
-    address: "6300 W Las Positas Blvd, Pleasanton, CA 94588",
-    url: "https://www.dmv.ca.gov/portal/field-office/pleasanton/",
-  },
-  pleasantonStoneridge: {
-    name: "Pleasanton Stoneridge DMV field office",
-    address: "2621 Stoneridge Mall, Unit G225B, Pleasanton, CA 94588",
-    url: "https://www.dmv.ca.gov/portal/field-office/pleasanton-stoneridge/",
-  },
-  hayward: {
-    name: "Hayward DMV field office",
-    address: "150 Jackson Street, Hayward, CA 94544",
-    url: "https://www.dmv.ca.gov/portal/field-office/hayward/",
-  },
-  fremont: {
-    name: "Fremont DMV field office",
-    address: "4287 Central Avenue, Fremont, CA 94536",
-    url: "https://www.dmv.ca.gov/portal/field-office/fremont/",
-  },
-  oakland: {
-    name: "Oakland DMV field office (Claremont)",
-    address: "5300 Claremont Avenue, Oakland, CA 94618",
-    url: "https://www.dmv.ca.gov/portal/field-office/oakland/",
-  },
-  oaklandColiseum: {
-    name: "Oakland Coliseum DMV field office",
-    address: "501 85th Avenue, Oakland, CA 94621",
-    url: "https://www.dmv.ca.gov/portal/field-office/oakland-coliseum/",
-  },
-  fairfield: {
-    name: "Fairfield DMV field office",
-    address: "160 Serrano Drive, Fairfield, CA 94533",
-    url: "https://www.dmv.ca.gov/portal/field-office/fairfield/",
-  },
-  vallejo: {
-    name: "Vallejo DMV field office",
-    address: "200 Couch Street, Vallejo, CA 94590",
-    url: "https://www.dmv.ca.gov/portal/field-office/vallejo/",
-  },
-  novato: {
-    name: "Novato DMV field office",
-    address: "936 7th Street A, Novato, CA 94947",
-    url: "https://www.dmv.ca.gov/portal/field-office/novato/",
-  },
-  pittsburg: {
-    name: "Pittsburg DMV field office",
-    address: "1399 Buchanan Road, Pittsburg, CA 94565",
-    url: "https://www.dmv.ca.gov/portal/field-office/pittsburg/",
-  },
-};
+// Re-exported so CityPage.jsx can keep importing it from here.
+export { DMV_LOCATIONS_URL };
 
 export const CITY_PAGES = [
   // ── San Francisco ──
@@ -106,8 +41,8 @@ export const CITY_PAGES = [
       "Your instructor picks you up at your address in the city, so there's no need to arrange your own transportation to a meeting point. Sessions can start somewhere calm to build confidence and then move on to the kind of streets you'll actually be tested on.",
     ],
     dmv: {
-      body: "Road tests for San Francisco drivers take place at a California DMV field office. The San Francisco field office is on Fell Street.",
-      offices: [OFFICES.sanFrancisco],
+      body: "Road tests for San Francisco drivers take place at a California DMV field office. The San Francisco field office is on Fell Street, and the Daly City office is another option just south of the city.",
+      offices: [OFFICES.sanFrancisco, OFFICES.dalyCity],
     },
     nearby: ["Daly City", "Oakland"],
     faqs: [
@@ -719,14 +654,14 @@ export const CITY_PAGES = [
       "Your instructor picks you up at your Berkeley address, whether that's a house, apartment, or campus area, so you can practice without needing a car of your own.",
     ],
     dmv: {
-      body: "Berkeley doesn't have its own DMV field office that we're aware of. The Oakland Claremont office is right across the city line. Confirm hours and testing availability on the DMV website.",
-      offices: [OFFICES.oakland, OFFICES.oaklandColiseum],
+      body: "Berkeley doesn't have its own DMV field office that we're aware of. The Oakland Claremont office is right across the city line, and El Cerrito is close by. Confirm hours and testing availability on the DMV website.",
+      offices: [OFFICES.oakland, OFFICES.elCerrito],
     },
     nearby: ["Oakland", "Emeryville", "El Cerrito"],
     faqs: [
       {
         q: "Where do Berkeley drivers take the road test?",
-        a: "The closest field office is the Oakland office at 5300 Claremont Avenue, with a second at 501 85th Avenue. Check the DMV website for availability.",
+        a: "The closest field offices are Oakland (5300 Claremont Avenue) and El Cerrito (6400 Manila Avenue). Check the DMV website for availability.",
       },
       {
         q: "Do I need my own car to take lessons?",
@@ -748,8 +683,8 @@ export const CITY_PAGES = [
       "Your instructor picks you up at your Emeryville address, and our 6-hour package includes a 15-minute freeway practice.",
     ],
     dmv: {
-      body: "Emeryville doesn't have its own DMV field office. The closest are in Oakland. Confirm hours and testing availability on the DMV website.",
-      offices: [OFFICES.oakland, OFFICES.oaklandColiseum],
+      body: "Emeryville doesn't have its own DMV field office. The closest are in Oakland, and El Cerrito is another option. Confirm hours and testing availability on the DMV website.",
+      offices: [OFFICES.oakland, OFFICES.oaklandColiseum, OFFICES.elCerrito],
     },
     nearby: ["Oakland", "Berkeley", "San Francisco"],
     faqs: [
@@ -779,14 +714,14 @@ export const CITY_PAGES = [
       "Your instructor picks you up at your Richmond address, and you choose the session times when you book.",
     ],
     dmv: {
-      body: "We're not aware of a full DMV field office in Richmond; DMV-authorized partner businesses handle some services here. The closest field offices are in Oakland. Confirm hours and testing availability on the DMV website.",
-      offices: [OFFICES.oakland, OFFICES.oaklandColiseum],
+      body: "We're not aware of a full DMV field office in Richmond; DMV-authorized partner businesses handle some services here. The closest field office is in neighboring El Cerrito, with Oakland as another option. Confirm hours and testing availability on the DMV website.",
+      offices: [OFFICES.elCerrito, OFFICES.oakland],
     },
     nearby: ["El Cerrito", "Berkeley", "Martinez"],
     faqs: [
       {
         q: "Is there a DMV office in Richmond?",
-        a: "The DMV lists partner businesses in Richmond for some registration services, but the closest field offices we know of are in Oakland.",
+        a: "The DMV lists partner businesses in Richmond for some registration services, but the closest field office is in El Cerrito (6400 Manila Avenue), with Oakland as another option.",
       },
       {
         q: "Do you pick up in Richmond?",
@@ -805,17 +740,17 @@ export const CITY_PAGES = [
     summary: "Driving lessons for El Cerrito drivers, with pick-up and drop-off included.",
     paragraphs: [
       "El Cerrito is a hillside city between Richmond and Berkeley, so steep residential streets are common. Practicing hill starts and parking on grades with an instructor beside you is worth the time before a road test.",
-      "Lessons begin at your El Cerrito address. Book a single 2-hour session to try it out or a longer package if you're starting from scratch.",
+      "Lessons begin at your El Cerrito address. If you're testing at the El Cerrito DMV, practicing on the hills and streets around it before test day is a good idea. Book a single 2-hour session or a longer package.",
     ],
     dmv: {
-      body: "El Cerrito doesn't have its own DMV field office that we're aware of. The closest are in Oakland. Confirm hours and testing availability on the DMV website.",
-      offices: [OFFICES.oakland],
+      body: "El Cerrito has its own California DMV field office on Manila Avenue, which offers testing. Confirm hours and appointment availability on the DMV website.",
+      offices: [OFFICES.elCerrito],
     },
     nearby: ["Richmond", "Berkeley"],
     faqs: [
       {
-        q: "Where do El Cerrito drivers take the road test?",
-        a: "The Oakland office at 5300 Claremont Avenue is the closest we know of. Check the DMV website for availability.",
+        q: "Where is the El Cerrito DMV?",
+        a: "The El Cerrito field office is at 6400 Manila Avenue, El Cerrito, CA 94530. Check the DMV website for current hours and road test availability.",
       },
       {
         q: "Can I book just one lesson?",
@@ -955,14 +890,14 @@ export const CITY_PAGES = [
       "Highway 101 runs right past town, so freeway practice is a useful part of a lesson plan here. Our 6-hour package includes a 15-minute freeway practice.",
     ],
     dmv: {
-      body: "Corte Madera doesn't have its own DMV field office that we're aware of. Novato is the Marin County field office we know of; San Francisco is another option across the bridge. Confirm hours and testing availability on the DMV website.",
-      offices: [OFFICES.novato, OFFICES.sanFrancisco],
+      body: "Corte Madera has its own California DMV field office on Tamal Vista Boulevard, which offers testing. Novato is another Marin County option. Confirm hours and appointment availability on the DMV website.",
+      offices: [OFFICES.corteMadera, OFFICES.novato],
     },
     nearby: ["San Francisco", "Vallejo"],
     faqs: [
       {
-        q: "Where do Corte Madera drivers take the road test?",
-        a: "Novato (936 7th Street A) is the Marin office we know of; San Francisco (1377 Fell Street) is another option. Check the DMV website for availability.",
+        q: "Where is the Corte Madera DMV?",
+        a: "The Corte Madera field office is at 75 Tamal Vista Boulevard, Corte Madera, CA 94925. Novato (936 7th Street A) is another option. Check the DMV website for availability.",
       },
       {
         q: "Do you pick up in Marin?",

@@ -20,6 +20,7 @@ import { trackGoogleAdsConversion } from "../lib/googleAdsPixel";
 import styles from "../styles/BookingPage.module.css";
 import SEOHead from "../components/SEOHead";
 import ZelleInfo from "../components/ZelleInfo";
+import { DMV_TEST_LOCATION_SUGGESTIONS } from "../data/dmvOffices";
 
 export default function BookingPage() {
   const { state, search } = useLocation();
@@ -31,6 +32,13 @@ export default function BookingPage() {
 
   const isDMV = selectedPackage.type === "DMV";
 
+  // Packages that involve a DMV road test ask "which DMV?" so it shows in
+  // the calendar event title (e.g. "Session 1: El Cerrito DMV - Name & ...").
+  // It's required when the DMV test is part of the package (DMV, Combo) and
+  // optional for the Mock Test, where it just helps us practice nearby.
+  const requiresDmvLocation = ["DMV", "COMBO"].includes(selectedPackage.type);
+  const asksDmvLocation = requiresDmvLocation || selectedPackage.type === "MOCK TEST";
+
   const [formData, setFormData] = useState({              /// all form values in one object
     firstName: "",                                        // student first name
     lastName: "",                                         /// student last name
@@ -41,6 +49,7 @@ export default function BookingPage() {
     address: "",                                          // home address (street)
     zip: "",                                              // ZIP code — needed for the calendar invite's address
     parentName: "",                                       // optional — shown on the calendar invite if provided
+    dmvLocation: "",                                      // which DMV office the road test is at (DMV/Combo/Mock packages)
     agreedToTerms: false,                                 // terms checkbox
     sessions: [],                                         // array to store session data
   });
@@ -188,6 +197,7 @@ const endTime = addMinutesToTime(startTime, duration);
     packageTitle: selectedPackage.title,
     price,
     paymentMethod: paymentMethodLabel,
+    dmvLocation: formData.dmvLocation.trim(),
   });
 
   const handleSubmit = async (e) => {
@@ -204,6 +214,11 @@ const endTime = addMinutesToTime(startTime, duration);
       : phoneDigits.length >= 10;
     if (!phoneOk) {
       alert("Please enter the student's phone number (10 digits).");
+      return;
+    }
+
+    if (requiresDmvLocation && !formData.dmvLocation.trim()) {
+      alert("Please tell us which DMV you're taking your road test at.");
       return;
     }
 
@@ -284,6 +299,7 @@ const endTime = addMinutesToTime(startTime, duration);
           address: formData.address,
           zip: formData.zip,
           parentName: formData.parentName || null,
+          dmvLocation: formData.dmvLocation.trim() || null,
           sessions: formData.sessions,
           status: "pending",
           paymentStatus: isPayNow ? "pending_payment" : "due_at_session",
@@ -543,6 +559,11 @@ const endTime = addMinutesToTime(startTime, duration);
               name="zip"
               value={formData.zip}
               onChange={handleFieldChange}
+              inputMode="numeric"
+              pattern="[0-9]{5}"
+              title="5-digit ZIP code"
+              autoComplete="postal-code"
+              placeholder="94545"
               maxLength={5}
               required
             />
@@ -560,9 +581,11 @@ const endTime = addMinutesToTime(startTime, duration);
           <label className={styles.fieldLabel}>
             Parent/Guardian Phone Number (optional):
             <input
+              type="tel"
               name="parentPhone"
               value={formData.parentPhone}
               onChange={handleFieldChange}
+              placeholder="+1 510 555 0123"
             />
           </label>
         </div>
@@ -575,6 +598,28 @@ const endTime = addMinutesToTime(startTime, duration);
     This appointment includes a 50-minute warm-up practice before the DMV test.
   </p>
 )}
+
+        {/* Which DMV office the road test is at — free text with suggestions,
+            so students can type an office that isn't in the list. */}
+        {asksDmvLocation && (
+          <label className={styles.fieldLabel}>
+            Which DMV are you taking your road test at?
+            {requiresDmvLocation ? "" : " (optional)"}
+            <input
+              name="dmvLocation"
+              value={formData.dmvLocation}
+              onChange={handleFieldChange}
+              list="dmv-test-locations"
+              placeholder="e.g. El Cerrito DMV"
+              required={requiresDmvLocation}
+            />
+            <datalist id="dmv-test-locations">
+              {DMV_TEST_LOCATION_SUGGESTIONS.map((name) => (
+                <option key={name} value={name} />
+              ))}
+            </datalist>
+          </label>
+        )}
 
         {sessionNumbers.map((num, idx) => {
           // Get session data if exists

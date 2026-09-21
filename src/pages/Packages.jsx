@@ -379,6 +379,8 @@ export default function Packages() {
                 value={zip}
                 onChange={handleZipChange}
                 placeholder="e.g. 94523"
+                inputMode="numeric"
+                autoComplete="postal-code"
                 maxLength={5}
               />
             </label>

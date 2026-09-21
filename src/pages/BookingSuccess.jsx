@@ -54,6 +54,7 @@ export default function BookingSuccess() {
         packageTitle: data.package,
         price: data.price,
         paymentMethod: PAYMENT_METHOD_LABEL_ONLINE,
+        dmvLocation: data.dmvLocation || "",
       };
 
       const sessions = data.sessions || [];

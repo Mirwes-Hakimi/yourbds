@@ -72,6 +72,7 @@ function buildDescription(booking) {
     parentPhone,
     packageTitle,
     price,
+    dmvLocation,
     appointmentDate,
     appointmentTime,
     paymentMethod,
@@ -90,6 +91,7 @@ function buildDescription(booking) {
     `Student Number: ${phone}`,
     `Phone Number: ${parentPhone || "Not provided"}`,
     `Package: ${packageTitle} — $${price}`,
+    ...(dmvLocation ? [`DMV test location: ${dmvLocation}`] : []),
     `Appointment: ${appointmentDate} at ${appointmentTime}`,
     `Payment method: ${paymentMethod}`,
     "",
@@ -114,8 +116,16 @@ export async function createBookingEvent(booking) {
   const { calendar } = await import("@googleapis/calendar");
   const calendarClient = calendar({ version: "v3", auth });
 
+  // For road-test packages the student says which DMV they're testing at,
+  // and it goes in the title, e.g. "Session 1: El Cerrito DMV - Jane Doe &
+  // Best Driving School". Students type this freely, so add " DMV" if they
+  // wrote just the city ("El Cerrito"), and skip it entirely if left blank.
+  const dmv = (booking.dmvLocation || "").trim();
+  const dmvLabel = dmv && !/dmv/i.test(dmv) ? `${dmv} DMV` : dmv;
+  const dmvPrefix = dmvLabel ? `${dmvLabel} - ` : "";
+
   const requestBody = {
-    summary: `Session ${booking.sessionNumber}: ${booking.studentName} & Best Driving School`,
+    summary: `Session ${booking.sessionNumber}: ${dmvPrefix}${booking.studentName} & Best Driving School`,
     location: booking.address,
     description: buildDescription(booking),
     start: { dateTime: booking.startDateTime, timeZone: TIME_ZONE },

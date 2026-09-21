@@ -71,6 +71,8 @@ export const syncSessionToCalendar = async (session, sessionNumber, bookingInfo)
     parentPhone: bookingInfo.parentPhone || undefined,
     packageTitle: bookingInfo.packageTitle,
     price: bookingInfo.price,
+    // Which DMV the road test is at — shown in the calendar event title.
+    dmvLocation: bookingInfo.dmvLocation || undefined,
     appointmentDate: session.date,
     appointmentTime: formatTime12(session.startTime),
     paymentMethod: bookingInfo.paymentMethod,
