@@ -51,6 +51,7 @@ const bookingSchema = z.object({
   phone: z.string().min(1),
   parentPhone: z.string().optional(),
   packageTitle: z.string().min(1),
+  packageType: z.string().max(40).optional(), // "TRAINING" | "DMV" | "MOCK TEST" | "COMBO"
   price: z.number().nonnegative(),
   // Which DMV office the road test is at (DMV/Combo/Mock packages only).
   dmvLocation: z.string().max(100).optional(),

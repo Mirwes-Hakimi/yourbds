@@ -71,6 +71,7 @@ function buildDescription(booking) {
     phone,
     parentPhone,
     packageTitle,
+    packageType,
     price,
     dmvLocation,
     appointmentDate,
@@ -100,9 +101,11 @@ function buildDescription(booking) {
     "",
     "— About This Event —",
     EVENT_TYPE_DESCRIPTION,
-    "",
-    "— Session Break Policy —",
-    SESSION_BREAK_POLICY,
+    // The 5-minute break applies to training sessions, not to a DMV road
+    // test day, so it's left out of DMV package events.
+    ...(packageType === "DMV"
+      ? []
+      : ["", "— Session Break Policy —", SESSION_BREAK_POLICY]),
   ].join("\n");
 }
 

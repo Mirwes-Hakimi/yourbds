@@ -195,6 +195,7 @@ const endTime = addMinutesToTime(startTime, duration);
     phone: formData.phone,
     parentPhone: formData.parentPhone,
     packageTitle: selectedPackage.title,
+    packageType: selectedPackage.type,
     price,
     paymentMethod: paymentMethodLabel,
     dmvLocation: formData.dmvLocation.trim(),

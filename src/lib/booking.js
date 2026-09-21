@@ -70,6 +70,9 @@ export const syncSessionToCalendar = async (session, sessionNumber, bookingInfo)
     phone: bookingInfo.phone,
     parentPhone: bookingInfo.parentPhone || undefined,
     packageTitle: bookingInfo.packageTitle,
+    // Lets the calendar function tailor the event notes (e.g. no training
+    // break policy on a DMV road test day).
+    packageType: bookingInfo.packageType || undefined,
     price: bookingInfo.price,
     // Which DMV the road test is at — shown in the calendar event title.
     dmvLocation: bookingInfo.dmvLocation || undefined,

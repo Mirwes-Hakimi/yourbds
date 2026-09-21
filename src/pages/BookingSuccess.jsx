@@ -52,6 +52,7 @@ export default function BookingSuccess() {
         phone: data.phone,
         parentPhone: data.parentPhone,
         packageTitle: data.package,
+        packageType: data.packageType,
         price: data.price,
         paymentMethod: PAYMENT_METHOD_LABEL_ONLINE,
         dmvLocation: data.dmvLocation || "",
