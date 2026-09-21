@@ -193,6 +193,20 @@ const endTime = addMinutesToTime(startTime, duration);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // The phone field starts pre-filled with "+1", so the browser's plain
+    // "required" check always passes. Count the actual digits instead:
+    // a "+1" number needs 11 digits (the 1 plus 10); anything else
+    // (e.g. a number typed without +1, or an international one) needs 10+.
+    const phone = formData.phone.trim();
+    const phoneDigits = phone.replace(/\D/g, "");
+    const phoneOk = phone.startsWith("+1")
+      ? phoneDigits.length === 11
+      : phoneDigits.length >= 10;
+    if (!phoneOk) {
+      alert("Please enter the student's phone number (10 digits).");
+      return;
+    }
+
     if (!formData.dob) {
       alert("Please enter date of birth.");
       return;
@@ -492,9 +506,12 @@ const endTime = addMinutesToTime(startTime, duration);
           <label className={styles.fieldLabel}>
             Student Phone Number:
             <input
+              type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleFieldChange}
+              placeholder="+1 510 555 0123"
+              autoComplete="tel"
               required
             />
           </label>
