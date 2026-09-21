@@ -43,8 +43,8 @@ const features = [
   },
   {
     icon: "📅",
-    title: "Flexible Scheduling",
-    desc: "Book sessions on your schedule: weekdays, weekends, mornings, or afternoons.",
+    title: "No Waiting List",
+    desc: "Unlike other schools, we don't make you wait weeks for an opening. Instructors are available now, book a session on your schedule this week.",
   },
   {
     icon: "📍",
@@ -157,6 +157,13 @@ export default function LandingPage() {
               pick-up from your door.
             </p>
 
+            {/* No-waiting-list callout — instructors have real openings,
+                unlike schools that put new students on a waitlist. */}
+            <div className={styles.availabilityBadge}>
+              <span className={styles.availabilityDot} aria-hidden="true" />
+              No waiting list — instructors available now
+            </div>
+
             {/* CTA buttons */}
             <div className={styles.heroBtns}>
               <Link to="/packages" className={styles.btnPrimary}>
@@ -209,7 +216,7 @@ export default function LandingPage() {
                 </li>
                 <li>
                   <span className={styles.heroCardCheck}>✓</span>
-                  Flexible scheduling, 7 days a week
+                  No waiting list, flexible scheduling 7 days a week
                 </li>
                 <li>
                   <span className={styles.heroCardCheck}>✓</span>

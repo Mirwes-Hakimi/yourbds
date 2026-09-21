@@ -173,6 +173,29 @@
   text-decoration: underline;
 }
 
+/* No-waiting-list availability callout */
+.availabilityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 1rem;
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #86efac;
+}
+
+.availabilityDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74,222,128,0.18);
+  flex-shrink: 0;
+}
+
 /* Social proof badge */
 .socialProof {
   display: flex;
