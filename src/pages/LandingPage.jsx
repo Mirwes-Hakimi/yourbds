@@ -161,7 +161,7 @@ export default function LandingPage() {
                 unlike schools that put new students on a waitlist. */}
             <div className={styles.availabilityBadge}>
               <span className={styles.availabilityDot} aria-hidden="true" />
-              No waiting list — instructors available now
+              No waiting list, instructors available now
             </div>
 
             {/* CTA buttons */}
