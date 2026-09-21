@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext";       // get logged-in user
 import { signOut } from "firebase/auth";                  // firebase sign out
-import { auth, db } from "../firebase";                   // firebase config + firestore
+import { auth } from "../firebase";                       // firebase auth
+import { db } from "../firestore";                        // firestore database
 import { motion } from "framer-motion";
 
 // Extract motion.h1 into a named variable so ESLint recognizes it as used

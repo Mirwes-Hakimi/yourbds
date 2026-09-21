@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
 
+// Firebase project settings. These values are public by design (they only
+// identify the project); security comes from Firestore rules + Auth.
 const firebaseConfig = {
   apiKey: "AIzaSyBJN8O9ytaBwJbSuMplH5S_MxmgdrEt_xE",
   authDomain: "best-driving-school-e6149.firebaseapp.com",
@@ -11,6 +12,9 @@ const firebaseConfig = {
   appId: "1:125616069253:web:cfce4095eb827167dde7ec",
 };
 
-const app = initializeApp(firebaseConfig);
+// PERFORMANCE: this file only sets up Firebase Auth, which the navbar needs
+// on every page. The Firestore database (the heavier library) lives in
+// src/firestore.js so it is only downloaded on pages that actually use it
+// (booking, dashboard, admin) instead of on every page.
+export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);

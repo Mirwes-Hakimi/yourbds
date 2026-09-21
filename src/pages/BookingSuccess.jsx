@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../firestore";
 import { useAuth } from "../components/AuthContext";
 import {
   PAYMENT_METHOD_LABEL_ONLINE,

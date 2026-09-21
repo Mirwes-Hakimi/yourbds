@@ -8,7 +8,7 @@ import {
   orderBy,     // sort query results
   query,       // build a Firestore query
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../firestore";
 import styles from "../styles/AdminPage.module.css";
 import SEOHead from "../components/SEOHead";
 

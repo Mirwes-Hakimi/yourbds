@@ -1,36 +1,40 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { captureAttributionFromUrl } from "./lib/attribution";
 
-// ── Core pages ──
+// ── Pages ──
+// PERFORMANCE: every page except the landing page is loaded with
+// React.lazy(), so a visitor only downloads the code for the pages they
+// actually open, instead of the whole site up front. The landing page stays
+// a normal import because most visitors (and all ad clicks) arrive on it,
+// so it should show instantly with no extra loading step.
 import LandingPage    from "./pages/LandingPage";
-import Login          from "./pages/Login";
-import Signup         from "./pages/Signup";
-import Packages       from "./pages/Packages";
-import BookingPage    from "./pages/BookingPage";
-import BookingSuccess from "./pages/BookingSuccess"; // /booking-success — after Stripe "Pay Now" checkout
-import Home           from "./pages/Home";           // user dashboard
-import AdminPage      from "./pages/AdminPage";      // admin dashboard
+
+const Login             = lazy(() => import("./pages/Login"));
+const Signup            = lazy(() => import("./pages/Signup"));
+const Packages          = lazy(() => import("./pages/Packages"));
+const BookingPage       = lazy(() => import("./pages/BookingPage"));
+const BookingSuccess    = lazy(() => import("./pages/BookingSuccess")); // /booking-success — after Stripe "Pay Now" checkout
+const Home              = lazy(() => import("./pages/Home"));           // user dashboard
+const AdminPage         = lazy(() => import("./pages/AdminPage"));      // admin dashboard
 
 // ── Info / content pages (navbar links) ──
-import ServicesPage     from "./pages/ServicesPage";     // /services (hub)
-import TeenCourse       from "./pages/TeenCourse";       // /services/teen-driving-lessons
-import AdultCourse      from "./pages/AdultCourse";      // /services/adult-driving-lessons
-import DmvInfo          from "./pages/DmvInfo";          // /services/dmv-test-preparation
-import DmvCarRentalPage from "./pages/DmvCarRentalPage"; // /services/dmv-test-car-rental
-import LocationsPage    from "./pages/LocationsPage";    // /locations
-import CityPage         from "./pages/CityPage";         // /locations/:citySlug
-import AboutPage        from "./pages/AboutPage";        // /about
-import FaqPage          from "./pages/FaqPage";          // /faq
-import PermitPractice   from "./pages/PermitPractice";   // /practice
-import NewDrivers       from "./pages/NewDrivers";       // /new-drivers
-import DriverEd         from "./pages/DriverEd";         // /education
-import ContactPage      from "./pages/ContactPage";      // /contact
-import PrivacyPolicy    from "./pages/PrivacyPolicy";    // /privacy-policy
-import GoRedirect        from "./pages/GoRedirect";       // /go/:slug — tracked partner-site redirects
-
-// ── Utility pages ──
-import NotFound       from "./pages/NotFound";       // 404
+const ServicesPage      = lazy(() => import("./pages/ServicesPage"));      // /services (hub)
+const TeenCourse        = lazy(() => import("./pages/TeenCourse"));        // /services/teen-driving-lessons
+const AdultCourse       = lazy(() => import("./pages/AdultCourse"));       // /services/adult-driving-lessons
+const DmvInfo           = lazy(() => import("./pages/DmvInfo"));           // /services/dmv-test-preparation
+const DmvCarRentalPage  = lazy(() => import("./pages/DmvCarRentalPage"));  // /services/dmv-test-car-rental
+const LocationsPage     = lazy(() => import("./pages/LocationsPage"));     // /locations
+const CityPage          = lazy(() => import("./pages/CityPage"));          // /locations/:citySlug
+const AboutPage         = lazy(() => import("./pages/AboutPage"));         // /about
+const FaqPage           = lazy(() => import("./pages/FaqPage"));           // /faq
+const PermitPractice    = lazy(() => import("./pages/PermitPractice"));    // /practice
+const NewDrivers        = lazy(() => import("./pages/NewDrivers"));        // /new-drivers
+const DriverEd          = lazy(() => import("./pages/DriverEd"));          // /education
+const ContactPage       = lazy(() => import("./pages/ContactPage"));       // /contact
+const PrivacyPolicy     = lazy(() => import("./pages/PrivacyPolicy"));     // /privacy-policy
+const GoRedirect        = lazy(() => import("./pages/GoRedirect"));        // /go/:slug — tracked partner-site redirects
+const NotFound          = lazy(() => import("./pages/NotFound"));          // 404
 
 // ── Route guards ──
 import PrivateRoute   from "./components/PrivateRoute"; // requires login
@@ -41,12 +45,36 @@ import Navbar         from "./pages/Navbar";
 import Footer         from "./components/Footer";
 import ScrollToTop    from "./components/ScrollToTop";
 
+// A blank dark screen shown for the split second a page's code is loading
+// (matches the site background so there's no white flash).
+function PageLoading() {
+  return <div style={{ minHeight: "60vh", background: "#000" }} aria-busy="true" />;
+}
+
 function App() {
   // Captures utm_source/medium/campaign/oppref from the landing URL, if
   // present, so it can be attached to a booking later even if the visitor
   // browses several pages first. See src/lib/attribution.js.
   useEffect(() => {
     captureAttributionFromUrl();
+  }, []);
+
+  // After a new version of the site is deployed, a tab that was left open
+  // still points at the OLD page files, which no longer exist. Vite fires
+  // "vite:preloadError" when that happens; reloading once fetches the new
+  // version. The sessionStorage flag prevents an endless reload loop.
+  useEffect(() => {
+    const onPreloadError = () => {
+      try {
+        if (sessionStorage.getItem("reloadedForNewVersion")) return;
+        sessionStorage.setItem("reloadedForNewVersion", "1");
+      } catch {
+        return;
+      }
+      window.location.reload();
+    };
+    window.addEventListener("vite:preloadError", onPreloadError);
+    return () => window.removeEventListener("vite:preloadError", onPreloadError);
   }, []);
 
   return (
@@ -57,6 +85,7 @@ function App() {
       {/* Navbar is always visible on every page */}
       <Navbar />
 
+      <Suspense fallback={<PageLoading />}>
       <Routes>
         {/* ── Public routes — anyone can visit ── */}
         <Route path="/"             element={<LandingPage />} />
@@ -104,6 +133,7 @@ function App() {
         {/* ── 404 fallback — catches any unknown URL ── */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </Suspense>
 
       {/* Footer is always visible on every page, same as Navbar */}
       <Footer />

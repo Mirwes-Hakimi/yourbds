@@ -29,3 +29,6 @@ functions/.runtimeconfig.json
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary files used to load secrets into Firebase (never commit these)
+*.tmp.txt
