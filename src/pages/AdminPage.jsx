@@ -230,13 +230,15 @@ export default function AdminPage() {
                   {booking.firstName} {booking.lastName}
                 </h2>
                 <p className={styles.packageLabel}>{booking.package}</p>
-                {booking.source && (
-                  <p className={styles.sourceTag}>
-                    Source: {booking.source}
-                    {booking.medium ? ` / ${booking.medium}` : ""}
-                    {booking.campaign ? ` / ${booking.campaign}` : ""}
-                  </p>
-                )}
+                {/* Always shown, even with no tracked source — a blank line here
+                    used to look like a bug, when it just means the visitor
+                    arrived with no utm_source in the URL (direct visit, plain
+                    Google search, bookmark, typed the address, etc.). */}
+                <p className={styles.sourceTag}>
+                  Source: {booking.source
+                    ? [booking.source, booking.medium, booking.campaign].filter(Boolean).join(" / ")
+                    : "Direct / not tracked (no ad link used)"}
+                </p>
               </div>
               <span className={`${styles.badge} ${styles[booking.status]}`}>
                 {booking.status}
