@@ -96,26 +96,20 @@ export default function BookingPage() {
     return `${newH}:${newM}`;                             // return "HH:MM" string
   };
 
-  // Pre-built list of selectable "start – end" slots, stepped every 30 minutes,
-  // sized to this package's session length, and kept within business hours (8 AM–6 PM).
+  // Session start time is a free-entry time picker (any minute, e.g. 10:20),
+  // not a fixed list of 30-minute slots — kept within business hours
+  // (8 AM–6 PM) via the min/max below, sized to this package's session length.
   const sessionDuration = selectedPackage.sessionDurationMinutes || 120;
   const BUSINESS_START_MIN = 8 * 60;   // 8:00 AM
   const BUSINESS_END_MIN = 18 * 60;    // 6:00 PM
-  const SLOT_STEP_MIN = 30;
 
-  const timeSlots = [];
-  for (
-    let start = BUSINESS_START_MIN;
-    start + sessionDuration <= BUSINESS_END_MIN;
-    start += SLOT_STEP_MIN
-  ) {
-    const startTime = `${String(Math.floor(start / 60)).padStart(2, "0")}:${String(start % 60).padStart(2, "0")}`;
-    const endTime = addMinutesToTime(startTime, sessionDuration);
-    timeSlots.push({
-      startTime,
-      label: `${formatTime12(startTime)} - ${formatTime12(endTime)}`,
-    });
-  }
+  // "HH:MM" helper — used for the time input's min/max attributes below.
+  const minutesToTimeStr = (totalMinutes) =>
+    `${String(Math.floor(totalMinutes / 60)).padStart(2, "0")}:${String(totalMinutes % 60).padStart(2, "0")}`;
+
+  const earliestStart = minutesToTimeStr(BUSINESS_START_MIN);
+  // Latest a session can start and still end by 6 PM.
+  const latestStart = minutesToTimeStr(Math.max(BUSINESS_START_MIN, BUSINESS_END_MIN - sessionDuration));
 
   // Update general (non-session) field values
   const handleFieldChange = (e) => {
@@ -255,9 +249,15 @@ const endTime = addMinutesToTime(startTime, duration);
         return;
       }
 
-      const hour = selectedDateTime.getHours();
-      if (hour < 8 || hour >= 18) {
-        alert(`Session ${i + 1} must be between 8:00 AM and 6:00 PM.`);
+      // The time picker now accepts any minute (e.g. 10:20), not just fixed
+      // slots, so check the exact start AND that the session ends by 6 PM —
+      // checking only the start hour (as before) would let e.g. a 5:50 PM
+      // start for a 2-hour session through, ending at 7:50 PM.
+      const startMinutes = selectedDateTime.getHours() * 60 + selectedDateTime.getMinutes();
+      if (startMinutes < BUSINESS_START_MIN || startMinutes + sessionDuration > BUSINESS_END_MIN) {
+        alert(
+          `Session ${i + 1} must start between ${formatTime12(earliestStart)} and ${formatTime12(latestStart)} so it finishes by 6:00 PM.`
+        );
         return;
       }
     }
@@ -643,22 +643,23 @@ const endTime = addMinutesToTime(startTime, duration);
               </label>
 
               <label className={styles.fieldLabel}>
-                Time:
-                <select
+                Start Time:
+                <input
+                  type="time"
                   value={session.startTime || ""}
                   onChange={(e) =>
                     handleSessionStartChange(idx, e.target.value)
                   }
+                  min={earliestStart}
+                  max={latestStart}
                   required
-                >
-                  <option value="" disabled>Select a time</option>
-                  {timeSlots.map((slot) => (
-                    <option key={slot.startTime} value={slot.startTime}>
-                      {slot.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </label>
+              {session.startTime && session.endTime && (
+                <p className={styles.sessionEndNote}>
+                  Ends at {formatTime12(session.endTime)}
+                </p>
+              )}
             </div>
           );
         })}

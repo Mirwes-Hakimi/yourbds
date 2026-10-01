@@ -194,6 +194,14 @@
   margin: 0;
 }
 
+/* Small note under the time picker showing the computed end time */
+.sessionEndNote {
+  grid-column: 1 / -1;
+  margin: -0.4rem 0 0;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
 /* ── Session cards ── */
 .sessionCard {
   display: grid;
