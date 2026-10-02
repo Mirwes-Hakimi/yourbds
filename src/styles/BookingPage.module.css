@@ -202,6 +202,26 @@
   color: #9ca3af;
 }
 
+/* "← Choose from quick times instead" link, shown under the custom time
+   input so a customer can switch back to the 30-minute quick-pick list. */
+.useQuickPickBtn {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin: -0.3rem 0 0;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #f97316;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.useQuickPickBtn:hover {
+  color: #fb923c;
+}
+
 /* ── Session cards ── */
 .sessionCard {
   display: grid;

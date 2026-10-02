@@ -21,6 +21,11 @@ import styles from "../styles/BookingPage.module.css";
 import SEOHead from "../components/SEOHead";
 import ZelleInfo from "../components/ZelleInfo";
 import { DMV_TEST_LOCATION_SUGGESTIONS } from "../data/dmvOffices";
+import { BUSINESS } from "../siteConfig";
+
+// Marks the dropdown's "Custom time..." option — never saved as a real
+// startTime, just a signal to switch that session into manual-entry mode.
+const CUSTOM_TIME_VALUE = "__custom__";
 
 export default function BookingPage() {
   const { state, search } = useLocation();
@@ -96,20 +101,49 @@ export default function BookingPage() {
     return `${newH}:${newM}`;                             // return "HH:MM" string
   };
 
-  // Session start time is a free-entry time picker (any minute, e.g. 10:20),
-  // not a fixed list of 30-minute slots — kept within business hours
-  // (8 AM–6 PM) via the min/max below, sized to this package's session length.
+  // Session start time: a quick-pick dropdown of common times (every 30
+  // minutes, like before) PLUS a "Custom time..." option that reveals a
+  // free time picker for anything else (e.g. 3:15 to 5:15). Bounded by the
+  // school's real business hours from siteConfig.js — NOT hardcoded here,
+  // so this can never silently drift out of sync with the posted hours
+  // again (it previously said 6 PM while the site said 7 PM).
   const sessionDuration = selectedPackage.sessionDurationMinutes || 120;
-  const BUSINESS_START_MIN = 8 * 60;   // 8:00 AM
-  const BUSINESS_END_MIN = 18 * 60;    // 6:00 PM
+  const timeToMinutes = (hhmm) => {
+    const [h, m] = hhmm.split(":").map(Number);
+    return h * 60 + m;
+  };
+  const businessHours = BUSINESS.hours?.[0];
+  const BUSINESS_START_MIN = businessHours ? timeToMinutes(businessHours.opens) : 8 * 60;
+  const BUSINESS_END_MIN = businessHours ? timeToMinutes(businessHours.closes) : 18 * 60;
 
   // "HH:MM" helper — used for the time input's min/max attributes below.
   const minutesToTimeStr = (totalMinutes) =>
     `${String(Math.floor(totalMinutes / 60)).padStart(2, "0")}:${String(totalMinutes % 60).padStart(2, "0")}`;
 
   const earliestStart = minutesToTimeStr(BUSINESS_START_MIN);
-  // Latest a session can start and still end by 6 PM.
+  // Latest a session can start and still end by closing time.
   const latestStart = minutesToTimeStr(Math.max(BUSINESS_START_MIN, BUSINESS_END_MIN - sessionDuration));
+
+  // Quick-pick times, stepped every 30 minutes, sized to this package's
+  // session length, kept within business hours.
+  const QUICK_PICK_STEP_MIN = 30;
+  const quickPickTimes = [];
+  for (
+    let start = BUSINESS_START_MIN;
+    start + sessionDuration <= BUSINESS_END_MIN;
+    start += QUICK_PICK_STEP_MIN
+  ) {
+    const startTime = minutesToTimeStr(start);
+    const endTime = addMinutesToTime(startTime, sessionDuration);
+    quickPickTimes.push({
+      startTime,
+      label: `${formatTime12(startTime)} - ${formatTime12(endTime)}`,
+    });
+  }
+
+  // Tracks, per session index, whether that session is in "Custom time"
+  // manual-entry mode rather than showing one of the quick-pick times.
+  const [customTimeSessions, setCustomTimeSessions] = useState({});
 
   // Update general (non-session) field values
   const handleFieldChange = (e) => {
@@ -643,18 +677,55 @@ const endTime = addMinutesToTime(startTime, duration);
               </label>
 
               <label className={styles.fieldLabel}>
-                Start Time:
-                <input
-                  type="time"
-                  value={session.startTime || ""}
-                  onChange={(e) =>
-                    handleSessionStartChange(idx, e.target.value)
-                  }
-                  min={earliestStart}
-                  max={latestStart}
-                  required
-                />
+                Time:
+                {customTimeSessions[idx] ? (
+                  <input
+                    type="time"
+                    value={session.startTime || ""}
+                    onChange={(e) =>
+                      handleSessionStartChange(idx, e.target.value)
+                    }
+                    min={earliestStart}
+                    max={latestStart}
+                    required
+                  />
+                ) : (
+                  <select
+                    value={session.startTime || ""}
+                    onChange={(e) => {
+                      if (e.target.value === CUSTOM_TIME_VALUE) {
+                        // Switch to manual entry — don't save the sentinel
+                        // value itself as a startTime.
+                        setCustomTimeSessions((prev) => ({ ...prev, [idx]: true }));
+                        return;
+                      }
+                      handleSessionStartChange(idx, e.target.value);
+                    }}
+                    required
+                  >
+                    <option value="" disabled>Select a time</option>
+                    {quickPickTimes.map((slot) => (
+                      <option key={slot.startTime} value={slot.startTime}>
+                        {slot.label}
+                      </option>
+                    ))}
+                    <option value={CUSTOM_TIME_VALUE}>Custom time…</option>
+                  </select>
+                )}
               </label>
+              {customTimeSessions[idx] && (
+                <button
+                  type="button"
+                  className={styles.useQuickPickBtn}
+                  onClick={() => {
+                    setCustomTimeSessions((prev) => ({ ...prev, [idx]: false }));
+                    handleSessionChange(idx, "startTime", "");
+                    handleSessionChange(idx, "endTime", "");
+                  }}
+                >
+                  ← Choose from quick times instead
+                </button>
+              )}
               {session.startTime && session.endTime && (
                 <p className={styles.sessionEndNote}>
                   Ends at {formatTime12(session.endTime)}
