@@ -76,6 +76,9 @@ export const syncSessionToCalendar = async (session, sessionNumber, bookingInfo)
     price: bookingInfo.price,
     // Which DMV the road test is at — shown in the calendar event title.
     dmvLocation: bookingInfo.dmvLocation || undefined,
+    // Anything else the customer wants the instructor/school to know
+    // (e.g. a scheduling conflict, a note about the address, etc.).
+    notes: bookingInfo.notes || undefined,
     appointmentDate: session.date,
     appointmentTime: formatTime12(session.startTime),
     paymentMethod: bookingInfo.paymentMethod,

@@ -55,6 +55,7 @@ export default function BookingPage() {
     zip: "",                                              // ZIP code — needed for the calendar invite's address
     parentName: "",                                       // optional — shown on the calendar invite if provided
     dmvLocation: "",                                      // which DMV office the road test is at (DMV/Combo/Mock packages)
+    notes: "",                                            // optional — anything else the customer wants us to know
     agreedToTerms: false,                                 // terms checkbox
     sessions: [],                                         // array to store session data
   });
@@ -227,6 +228,7 @@ const endTime = addMinutesToTime(startTime, duration);
     price,
     paymentMethod: paymentMethodLabel,
     dmvLocation: formData.dmvLocation.trim(),
+    notes: formData.notes.trim(),
   });
 
   const handleSubmit = async (e) => {
@@ -335,6 +337,7 @@ const endTime = addMinutesToTime(startTime, duration);
           zip: formData.zip,
           parentName: formData.parentName || null,
           dmvLocation: formData.dmvLocation.trim() || null,
+          notes: formData.notes.trim() || null,
           sessions: formData.sessions,
           status: "pending",
           paymentStatus: isPayNow ? "pending_payment" : "due_at_session",
@@ -423,6 +426,7 @@ const endTime = addMinutesToTime(startTime, duration);
         price,
         sessions_text: buildSessionsText(formData.sessions),
         payment_status_text: "Due at your session",
+        notes_text: formData.notes.trim() || "None",
       });
     } catch (err) {
       console.error("Booking failed:", err);
@@ -770,6 +774,22 @@ const endTime = addMinutesToTime(startTime, duration);
             </div>
           </label>
         </div>
+
+        {/* Optional notes — a different time than what's listed, an address
+            detail, anything else the customer wants us to know before their
+            session. Shown to the school in the booking email, the admin
+            page, and the Google Calendar event notes. */}
+        <label className={styles.fieldLabel}>
+          Anything else we should know? (optional)
+          <textarea
+            name="notes"
+            value={formData.notes}
+            onChange={handleFieldChange}
+            placeholder="e.g. I need a different time than what's listed, a gate code, etc."
+            rows={3}
+            maxLength={1000}
+          />
+        </label>
 
         {/* Terms and conditions */}
         <label className={styles.termsRow}>

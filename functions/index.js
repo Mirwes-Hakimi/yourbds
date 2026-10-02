@@ -55,6 +55,8 @@ const bookingSchema = z.object({
   price: z.number().nonnegative(),
   // Which DMV office the road test is at (DMV/Combo/Mock packages only).
   dmvLocation: z.string().max(100).optional(),
+  // Free-text note from the customer (e.g. a scheduling conflict).
+  notes: z.string().max(1000).optional(),
   appointmentDate: z.string().min(1), // human-readable, for the description text
   appointmentTime: z.string().min(1), // human-readable, for the description text
   paymentMethod: z.string().min(1),

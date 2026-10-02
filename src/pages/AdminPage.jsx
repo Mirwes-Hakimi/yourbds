@@ -266,6 +266,9 @@ export default function AdminPage() {
               {booking.dmvLocation && (
                 <span><span className={styles.label}>DMV test at</span>{booking.dmvLocation}</span>
               )}
+              {booking.notes && (
+                <span><span className={styles.label}>Notes</span>{booking.notes}</span>
+              )}
             </div>
 
             {/* ── Sessions section ── */}
