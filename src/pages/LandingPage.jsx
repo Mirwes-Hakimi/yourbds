@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import styles from "../styles/LandingPage.module.css";
 import { useAuth } from "../components/AuthContext";
-import { SCHOOL_PHONE, SCHOOL_PHONE_TEL } from "../siteConfig";
-import { FaCarSide, FaArrowRight } from "react-icons/fa";
+import { SCHOOL_PHONE, SCHOOL_PHONE_TEL, SCHOOL_ADDRESS, BUSINESS } from "../siteConfig";
+import { FaCarSide, FaArrowRight, FaGoogle } from "react-icons/fa";
 import SEOHead from "../components/SEOHead";
 import {
   buildLocalBusinessSchema,
@@ -12,6 +12,15 @@ import {
   buildWebSiteSchema,
 } from "../lib/structuredData";
 import { faqs } from "../data/faq";
+
+// Links straight to this business's real Google Maps listing, where the
+// reviews below can be independently verified — real quotes, but shown as
+// styled cards on our own site, so a skeptical visitor has no way to tell
+// that from a fabricated/AI-written testimonial without this link. Same
+// query pattern as the "Get Directions" link on ContactPage.jsx.
+const GOOGLE_REVIEWS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  `${BUSINESS.name} ${SCHOOL_ADDRESS}`
+)}`;
 
 // Reusable animation: fade up from below as element enters view
 const fadeUp = {
@@ -370,6 +379,13 @@ export default function LandingPage() {
         >
           <p className={styles.sectionLabel}>Testimonials</p>
           <h2 className={styles.sectionTitle}>What Our Students Say</h2>
+          <p className={styles.sectionSubtitle}>
+            Real reviews from our Google Business Profile —{" "}
+            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
+              see them on Google
+            </a>{" "}
+            to verify them yourself.
+          </p>
         </motion.div>
 
         <div className={styles.testimonialsGrid}>
@@ -386,11 +402,31 @@ export default function LandingPage() {
               <p className={styles.testimonialStars}>★★★★★</p>
               <p className={styles.testimonialQuote}>&ldquo;{t.quote}&rdquo;</p>
               <p className={styles.testimonialName}>
-                {t.name} <span className={styles.testimonialCity}>· {t.source}</span>
+                {t.name}{" "}
+                <span className={styles.testimonialCity}>
+                  · <FaGoogle aria-hidden="true" className={styles.testimonialGoogleIcon} /> {t.source}
+                </span>
               </p>
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className={styles.testimonialsCtaWrap}
+        >
+          <a
+            href={GOOGLE_REVIEWS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.btnSecondary}
+          >
+            <FaGoogle aria-hidden="true" /> Read All Our Reviews on Google
+          </a>
+        </motion.div>
       </section>
 
       {/* ════════════════════════════════

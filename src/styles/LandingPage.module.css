@@ -461,6 +461,24 @@
   margin-bottom: 2.5rem;
 }
 
+/* Optional line under a sectionTitle — used by Testimonials to link out to
+   the real Google reviews, pulled up to sit right under the title. */
+.sectionSubtitle {
+  margin: -1.75rem 0 2.5rem;
+  font-size: 0.95rem;
+  color: #9ca3af;
+}
+
+.sectionSubtitle a {
+  color: #f97316;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.sectionSubtitle a:hover {
+  color: #fb923c;
+}
+
 /* ─────────────────────────────────────────
    WHY CHOOSE US — feature cards grid
 ───────────────────────────────────────── */
@@ -652,6 +670,18 @@
 .testimonialCity {
   font-weight: 400;
   color: #9ca3af;
+}
+
+/* Small Google "G" mark next to "Google review" on each card, so it reads
+   as Google-sourced at a glance, not just a styled quote on our own site. */
+.testimonialGoogleIcon {
+  display: inline-block;
+  vertical-align: -1px;
+  color: #f97316;
+}
+
+.testimonialsCtaWrap {
+  margin-top: 2.5rem;
 }
 
 /* ─────────────────────────────────────────
