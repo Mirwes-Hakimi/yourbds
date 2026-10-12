@@ -457,7 +457,7 @@ export default function LandingPage() {
           <p className={styles.sectionLabel}>Proof, Not Promises</p>
           <h2 className={styles.sectionTitle}>Real Students, Real Pass Certificates</h2>
           <p className={styles.sectionSubtitle}>
-            Actual photos from our students' test day — not stock photos.
+            Actual photos from our students' test day.
           </p>
         </motion.div>
 
