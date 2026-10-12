@@ -124,6 +124,15 @@ const testimonials = [
   },
 ];
 
+// ── Real student pass-day photos — see public/student-successes/.
+// No names/locations are attached since none were given for these specific
+// photos (unlike the text testimonials above, which came with names) — only
+// honest, generic alt text. Each links to the full-size photo in a new tab.
+const studentPhotos = Array.from({ length: 7 }, (_, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  return { src: `/student-successes/pass-${n}.jpg`, key: n };
+});
+
 // FAQ content now lives in src/data/faq.js, shared with the full /faq page
 
 export default function LandingPage() {
@@ -433,6 +442,47 @@ export default function LandingPage() {
             <FaGoogle aria-hidden="true" /> Read All Our Reviews on Google
           </a>
         </motion.div>
+      </section>
+
+      {/* ════════════════════════════════
+           REAL STUDENT PASS-DAY PHOTOS
+          ════════════════════════════════ */}
+      <section className={styles.section}>
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <p className={styles.sectionLabel}>Proof, Not Promises</p>
+          <h2 className={styles.sectionTitle}>Real Students, Real Pass Certificates</h2>
+          <p className={styles.sectionSubtitle}>
+            Actual photos from our students' test day — not stock photos.
+          </p>
+        </motion.div>
+
+        <div className={styles.photoGrid}>
+          {studentPhotos.map((p, i) => (
+            <motion.a
+              key={p.key}
+              href={p.src}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.photoCard}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06 }}
+            >
+              <img
+                src={p.src}
+                alt="Best Driving School student holding their DMV pass certificate"
+                loading="lazy"
+              />
+            </motion.a>
+          ))}
+        </div>
       </section>
 
       {/* ════════════════════════════════

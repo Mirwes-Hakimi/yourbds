@@ -701,6 +701,42 @@
 }
 
 /* ─────────────────────────────────────────
+   REAL STUDENT PASS-DAY PHOTOS
+───────────────────────────────────────── */
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.photoCard {
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(249,115,22,0.15);
+  transition: transform 0.2s, box-shadow 0.25s;
+}
+
+.photoCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(249,115,22,0.18);
+}
+
+.photoCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ─────────────────────────────────────────
    FAQ
 ───────────────────────────────────────── */
 .faqList {
