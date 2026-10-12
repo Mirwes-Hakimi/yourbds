@@ -173,22 +173,28 @@ export default function LandingPage() {
               No waiting list, instructors available now
             </div>
 
-            {/* CTA buttons */}
+            {/* CTA buttons — just the one primary action. "Create Account" used
+                to sit here as a full button, competing for attention with the
+                booking/call CTAs that actually convert; it's now a small,
+                low-emphasis link below instead (see heroSecondaryLink). */}
             <div className={styles.heroBtns}>
               <Link to="/packages" className={styles.btnPrimary}>
                 Explore Packages
               </Link>
-              {!user && (
-                <Link to="/signup" className={styles.btnSecondary}>
-                  Create Account
-                </Link>
-              )}
             </div>
 
             {/* Click-to-call — easy to spot for anyone who'd rather just phone in */}
             <a href={`tel:${SCHOOL_PHONE_TEL}`} className={styles.heroCallLink}>
               <span aria-hidden="true">📞</span> Call us: {SCHOOL_PHONE}
             </a>
+
+            {/* De-emphasized on purpose — an account isn't required to book,
+                so it shouldn't visually compete with Explore Packages / Call. */}
+            {!user && (
+              <Link to="/signup" className={styles.heroSecondaryLink}>
+                New here? Create an account →
+              </Link>
+            )}
 
             {/* Social proof badge */}
             <div className={styles.socialProof}>
