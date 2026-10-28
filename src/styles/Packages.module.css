@@ -153,7 +153,11 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.25rem;
-  align-items: start;
+  /* Stretch (the grid default) so every card in a row matches the tallest
+     one — paired with .features' flex:1 below, this keeps every "Book Now"
+     button lined up at the same height regardless of how many feature
+     bullets a card has. */
+  align-items: stretch;
 }
 
 /* ── Package card ── */
