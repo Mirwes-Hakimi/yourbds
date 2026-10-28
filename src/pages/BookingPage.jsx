@@ -801,7 +801,11 @@ const endTime = addMinutesToTime(startTime, duration);
             required
           />
           <span>
-            Please acknowledge Terms and Conditions (link “Read more” here).
+            I agree to the{" "}
+            <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+              Terms and Conditions
+            </a>
+            .
           </span>
         </label>
 

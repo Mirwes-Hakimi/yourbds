@@ -77,6 +77,9 @@ export default function Footer() {
           <Link to="/privacy-policy" className={styles.link} style={{ marginTop: "1rem" }}>
             Privacy Policy
           </Link>
+          <Link to="/terms-and-conditions" className={styles.link}>
+            Terms and Conditions
+          </Link>
         </div>
       </div>
 

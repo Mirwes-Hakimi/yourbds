@@ -33,6 +33,7 @@ const NewDrivers        = lazy(() => import("./pages/NewDrivers"));        // /n
 const DriverEd          = lazy(() => import("./pages/DriverEd"));          // /education
 const ContactPage       = lazy(() => import("./pages/ContactPage"));       // /contact
 const PrivacyPolicy     = lazy(() => import("./pages/PrivacyPolicy"));     // /privacy-policy
+const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions")); // /terms-and-conditions
 const GoRedirect        = lazy(() => import("./pages/GoRedirect"));        // /go/:slug — tracked partner-site redirects
 const NotFound          = lazy(() => import("./pages/NotFound"));          // 404
 
@@ -116,6 +117,7 @@ function App() {
         <Route path="/education"    element={<DriverEd />} />
         <Route path="/contact"      element={<ContactPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 
         {/* Booking is open to guests too — signing up is optional */}
         <Route path="/booking"         element={<BookingPage />} />
