@@ -178,6 +178,22 @@ export default function AdminPage() {
   const visibleBookings =
     filter === "all" ? bookings : bookings.filter((b) => b.status === filter);
 
+  // ── Possible-duplicate detection ──
+  // Customers occasionally submit the booking form twice (e.g. to fix a
+  // typo, or because they weren't sure the first one went through) — the
+  // two entries can have different-looking emails/addresses, so matching on
+  // phone number (digits only, so formatting differences don't matter) is
+  // the more reliable way to catch it. Counted across ALL bookings, not
+  // just the current filter tab, so a duplicate still shows even if one
+  // copy was already marked cancelled.
+  const normalizePhone = (p) => (p || "").replace(/\D/g, "");
+  const phoneCounts = {};
+  for (const b of bookings) {
+    const key = normalizePhone(b.phone);
+    if (key.length < 7) continue; // too short to be a real match, skip
+    phoneCounts[key] = (phoneCounts[key] || 0) + 1;
+  }
+
   // Count per status for the tab labels
   const counts = {
     all:       bookings.length,
@@ -239,6 +255,11 @@ export default function AdminPage() {
                     ? [booking.source, booking.medium, booking.campaign].filter(Boolean).join(" / ")
                     : "Direct / not tracked (no ad link used)"}
                 </p>
+                {phoneCounts[normalizePhone(booking.phone)] > 1 && (
+                  <p className={styles.duplicateWarning}>
+                    ⚠ {phoneCounts[normalizePhone(booking.phone)]} bookings share this phone number — check for a duplicate submission
+                  </p>
+                )}
               </div>
               <span className={`${styles.badge} ${styles[booking.status]}`}>
                 {booking.status}

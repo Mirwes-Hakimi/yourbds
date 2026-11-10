@@ -454,6 +454,10 @@ const endTime = addMinutesToTime(startTime, duration);
           <p className={styles.payLaterNote}>
             No payment is due now, you'll pay at your first session.
           </p>
+          <p className={styles.summary}>
+            ✓ Your booking is saved — no need to submit this form again. If you need to change
+            anything, contact us and we'll update it for you.
+          </p>
 
           {/* Optional: customers who'd rather pay ahead by Zelle */}
           <ZelleInfo amount={price} />

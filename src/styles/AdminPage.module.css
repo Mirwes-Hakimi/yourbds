@@ -141,6 +141,20 @@
   text-transform: capitalize;
 }
 
+/* Shown when another booking shares this one's phone number — likely a
+   duplicate submission (see normalizePhone/phoneCounts in AdminPage.jsx). */
+.duplicateWarning {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.3);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  margin: 0.4rem 0 0;
+}
+
 /* ── Status badge (top-right corner) ── */
 .badge {
   font-size: 0.72rem;
