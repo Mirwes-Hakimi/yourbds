@@ -30,17 +30,29 @@ service cloud.firestore {
       // AdminPage.jsx); a logged-in user can update their own booking.
       //
       // Anyone — including guests — may flip `postPaymentProcessed` to
-      // true, but ONLY once `paymentStatus` is already "paid", and ONLY
-      // that one field. `paymentStatus` itself can only ever be set to
-      // "paid" by the Stripe webhook (functions/index.js — uses the Admin
-      // SDK, which bypasses these rules entirely), never by a client. That
+      // true (and record the Google Calendar sync result alongside it),
+      // but ONLY once `paymentStatus` is already "paid", and ONLY those
+      // two fields. `paymentStatus` itself can only ever be set to "paid"
+      // by the Stripe webhook (functions/index.js — uses the Admin SDK,
+      // which bypasses these rules entirely), never by a client. That
       // keeps this one client-writable field from ever being used to fake
       // a payment.
+      //
+      // A still-pending, not-yet-paid booking can also be overwritten by
+      // anyone who knows its exact ID — the same "unguessable ID" trust
+      // level `allow get` above already grants for reading it (these IDs
+      // are random UUIDs/auto-IDs, not sequential or guessable). This
+      // covers two guest-facing cases BookingPage.jsx relies on: (1) a
+      // slow-connection retry safely re-saving the same booking instead of
+      // creating a duplicate, and (2) recording each session's Google
+      // Calendar sync result once it resolves. It closes the moment an
+      // admin confirms/cancels the booking or payment completes.
       allow update: if isAdmin() ||
         (request.auth != null && request.auth.uid == resource.data.userId) ||
         (resource.data.paymentStatus == "paid" &&
-          request.resource.data.diff(resource.data).affectedKeys().hasOnly(["postPaymentProcessed"]) &&
-          request.resource.data.postPaymentProcessed == true);
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(["postPaymentProcessed", "sessions"]) &&
+          request.resource.data.postPaymentProcessed == true) ||
+        (resource.data.status == "pending" && resource.data.paymentStatus != "paid");
 
       // Only the admin can permanently delete a booking (AdminPage.jsx's
       // "Delete Permanently" button, gated behind a typed confirmation).

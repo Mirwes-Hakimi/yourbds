@@ -238,6 +238,24 @@
   margin-right: 0.5rem;
 }
 
+/* Per-session Google Calendar sync status (see AdminPage.jsx) */
+.calendarSynced {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4ade80;
+  text-decoration: none;
+}
+
+.calendarSynced:hover {
+  text-decoration: underline;
+}
+
+.calendarFailed {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fbbf24;
+}
+
 /* ── Edit block (shown when edit mode is open) ── */
 .editBlock {
   display: grid;

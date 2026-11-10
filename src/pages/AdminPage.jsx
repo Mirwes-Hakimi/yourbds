@@ -319,6 +319,25 @@ export default function AdminPage() {
                       <span className={styles.sessionNum}>Session {i + 1}</span>
                       {formatDate(s.date)} &nbsp;·&nbsp;
                       {formatTime(s.startTime)} – {formatTime(s.endTime)}
+                      {/* Calendar-sync status, recorded once the booking/payment
+                          flow finishes (see BookingPage.jsx / BookingSuccess.jsx).
+                          Older bookings made before this existed have neither
+                          field — shown as neutral/unknown, not a failure. */}
+                      {s.calendarStatus === "synced" && (
+                        <a
+                          href={s.calendarEventLink || undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.calendarSynced}
+                        >
+                          &nbsp;✓ On calendar
+                        </a>
+                      )}
+                      {s.calendarStatus === "failed" && (
+                        <span className={styles.calendarFailed}>
+                          &nbsp;⚠ Not on calendar — add manually
+                        </span>
+                      )}
                     </li>
                   ))}
                 </ul>

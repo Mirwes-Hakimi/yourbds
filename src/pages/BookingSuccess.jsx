@@ -74,7 +74,17 @@ export default function BookingSuccess() {
         payment_status_text: "Paid in full ✓",
       });
 
-      await updateDoc(bookingRef, { postPaymentProcessed: true });
+      // Record each session's calendar-sync result on the booking itself —
+      // previously this only lived in this tab's memory for the confirmation
+      // screen, so a failed sync was invisible to the admin page unless a
+      // customer happened to call about it. See AdminPage.jsx's "On
+      // calendar" / "Not on calendar" badges.
+      const syncedSessions = sessions.map((session, i) => ({
+        ...session,
+        calendarStatus: sessionResults[i]?.status === "success" ? "synced" : "failed",
+        calendarEventLink: sessionResults[i]?.htmlLink || null,
+      }));
+      await updateDoc(bookingRef, { postPaymentProcessed: true, sessions: syncedSessions });
 
       return sessions.map((s, i) => ({
         sessionNumber: i + 1,

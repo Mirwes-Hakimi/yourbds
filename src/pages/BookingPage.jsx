@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firestore";
 import { useAuth } from "../components/AuthContext";
 import {
@@ -205,6 +205,20 @@ const endTime = addMinutesToTime(startTime, duration);
 
   const [submitting, setSubmitting] = useState(false);
 
+  // Stable document ID for THIS page load, generated once (not per submit
+  // attempt). If a customer's first save times out on a slow connection and
+  // they click submit again, this makes the retry overwrite the same
+  // Firestore document instead of creating a second one — the original
+  // save may still land after our own 20s timeout gives up on it, so
+  // without this a slow connection could leave several identical bookings
+  // behind. A page reload (not just a retry click) generates a fresh id,
+  // which is correct — that's a genuinely new attempt.
+  const [bookingDraftId] = useState(
+    () => (typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`)
+  );
+
   // Set once the booking is saved — swaps the form out for a confirmation
   // panel. `sessions` holds one entry per session, each tracking its own
   // Google Calendar sync status (pending -> success | error) as it resolves.
@@ -319,8 +333,9 @@ const endTime = addMinutesToTime(startTime, duration);
       // and confirmation emails are deferred to BookingSuccess.jsx, which
       // only runs them once Stripe's webhook has confirmed the payment
       // really went through (never trust the redirect alone for that).
-      const docRef = await withTimeout(
-        addDoc(collection(db, "bookings"), {
+      const bookingRef = doc(db, "bookings", bookingDraftId);
+      await withTimeout(
+        setDoc(bookingRef, {
           userId: user?.uid || null,
           userEmail: user?.email || formData.email,
           package: selectedPackage.title,
@@ -362,11 +377,11 @@ const endTime = addMinutesToTime(startTime, duration);
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              bookingId: docRef.id,
+              bookingId: bookingDraftId,
               packageTitle: selectedPackage.title,
               priceUsd: Number(price),
               studentEmail: formData.email,
-              successUrl: `${window.location.origin}/booking-success?bookingId=${docRef.id}`,
+              successUrl: `${window.location.origin}/booking-success?bookingId=${bookingDraftId}`,
               cancelUrl: `${window.location.origin}/booking?canceled=1`,
             }),
           }),
@@ -405,8 +420,17 @@ const endTime = addMinutesToTime(startTime, duration);
       // Sync each session to Google Calendar — best effort, in the
       // background; updates bookingResult as each resolves so the
       // confirmation panel can show a live success/error state per session.
+      //
+      // IMPORTANT: that live update only lives in this browser tab's memory
+      // — it used to be the ONLY record of whether a session ever made it
+      // onto the calendar. If sync failed (or this tab closed before it
+      // finished), nobody could tell afterward without checking the actual
+      // calendar by hand. Once every session has settled, the result is
+      // also written back onto the Firestore booking doc (below) so the
+      // admin page can show it — see AdminPage.jsx's "On calendar" /
+      // "Not on calendar" badges.
       const bookingInfo = buildBookingInfo(PAYMENT_METHOD_LABEL_LATER);
-      formData.sessions.forEach((session, i) => {
+      const syncPromises = formData.sessions.map((session, i) =>
         syncSessionToCalendar(session, i + 1, bookingInfo).then((result) => {
           setBookingResult((prev) => {
             if (!prev) return prev; // user already navigated away
@@ -414,7 +438,18 @@ const endTime = addMinutesToTime(startTime, duration);
             sessions[i] = { ...sessions[i], status: result.status, htmlLink: result.htmlLink };
             return { ...prev, sessions };
           });
-        });
+          return result;
+        })
+      );
+      Promise.all(syncPromises).then((results) => {
+        const syncedSessions = formData.sessions.map((session, i) => ({
+          ...session,
+          calendarStatus: results[i]?.status === "success" ? "synced" : "failed",
+          calendarEventLink: results[i]?.htmlLink || null,
+        }));
+        updateDoc(bookingRef, { sessions: syncedSessions }).catch((err) =>
+          console.error("Failed to record calendar sync status on the booking:", err)
+        );
       });
 
       // Email the customer AND the school — best effort.

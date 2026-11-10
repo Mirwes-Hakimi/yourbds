@@ -95,7 +95,12 @@ export const syncSessionToCalendar = async (session, sessionNumber, bookingInfo)
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       }),
-      15000,
+      // 25s, not 15s — a cold-started Cloud Function can genuinely take this
+      // long, and a too-tight timeout here was one cause of sessions being
+      // marked "failed" even though the calendar event was created moments
+      // later. This doesn't cancel the underlying request either way (see
+      // withTimeout above) — it only affects how soon the UI gives up on it.
+      25000,
       "Calendar sync timed out"
     );
 
