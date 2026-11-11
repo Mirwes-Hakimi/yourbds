@@ -44,7 +44,7 @@ export default function Packages() {
       cities: {
         "San Francisco": 210,
         "Daly City": 200,
-        "Livermore": 180,
+        "Livermore": 210,
         "Pleasanton": 180,
         "Dublin": 180,
         "San Ramon": 180,
@@ -97,7 +97,7 @@ export default function Packages() {
       cities: {
         "San Francisco": 390,
         "Daly City": 380,
-        "Livermore": 340,
+        "Livermore": 390,
         "Pleasanton": 340,
         "Dublin": 340,
         "San Ramon": 340,
@@ -111,7 +111,7 @@ export default function Packages() {
         "Brentwood": 365,
         "Oakland": 340,
         "Hayward": 340,
-        "Fremont": 400,
+        "Fremont": 390,
         "San Leandro": 340,
         "Castro Valley": 340,
         "Union City": 400,
@@ -152,7 +152,7 @@ export default function Packages() {
       cities: {
         "San Francisco": 590,
         "Daly City": 550,
-        "Livermore": 500,
+        "Livermore": 590,
         "Pleasanton": 500,
         "Dublin": 500,
         "San Ramon": 500,
