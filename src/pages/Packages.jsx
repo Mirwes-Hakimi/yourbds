@@ -209,7 +209,7 @@ export default function Packages() {
       cities: {
         "San Francisco": 300,
         "Daly City": 300,
-        "Livermore": 250,
+        "Livermore": 300,
         "Pleasanton": 250,
         "Dublin": 250,
         "San Ramon": 250,
@@ -223,7 +223,7 @@ export default function Packages() {
         "Brentwood": 250,
         "Oakland": 250,
         "Hayward": 250,
-        "Fremont": 250,
+        "Fremont": 300,
         "San Leandro": 250,
         "Castro Valley": 250,
         "Union City": 250,
