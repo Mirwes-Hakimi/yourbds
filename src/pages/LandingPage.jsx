@@ -4,7 +4,16 @@ import { Link } from "react-router-dom";
 import styles from "../styles/LandingPage.module.css";
 import { useAuth } from "../components/AuthContext";
 import { SCHOOL_PHONE, SCHOOL_PHONE_TEL, SCHOOL_ADDRESS, BUSINESS } from "../siteConfig";
-import { FaCarSide, FaArrowRight, FaGoogle } from "react-icons/fa";
+import {
+  FaCarSide,
+  FaArrowRight,
+  FaGoogle,
+  FaMapMarkerAlt,
+  FaUserGraduate,
+  FaUserTie,
+  FaClipboardCheck,
+  FaKey,
+} from "react-icons/fa";
 import SEOHead from "../components/SEOHead";
 import {
   buildLocalBusinessSchema,
@@ -27,6 +36,24 @@ const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
+
+// ── Hero quick-links — the 4 real services (matches ServicesPage.jsx),
+// shown as an icon row in the hero so a visitor can jump straight to the
+// one they need instead of scrolling.
+const heroServiceLinks = [
+  { icon: FaUserGraduate, label: "Teen Driving Lessons", to: "/services/teen-driving-lessons" },
+  { icon: FaUserTie, label: "Adult Driving Lessons", to: "/services/adult-driving-lessons" },
+  { icon: FaClipboardCheck, label: "DMV Test Preparation", to: "/services/dmv-test-preparation" },
+  { icon: FaKey, label: "DMV Test Car Rental", to: "/services/dmv-test-car-rental" },
+];
+
+// A representative, real subset of the 40 served cities (full list and
+// ZIP-based pricing lookup live on /packages and /locations) — enough to
+// show real geographic spread without listing all 40 in the hero.
+const heroFeaturedCities = [
+  "San Francisco", "Oakland", "Hayward", "Fremont", "Concord",
+  "Walnut Creek", "Pleasanton", "Dublin", "Sacramento", "Elk Grove",
+];
 
 // ── Why Choose Us cards ──
 const features = [
@@ -164,6 +191,10 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9 }}
           >
+            <p className={styles.heroLocationBadge}>
+              <FaMapMarkerAlt aria-hidden="true" /> Bay Area &amp; Sacramento, CA
+            </p>
+
             <h1 className={styles.heroTitle}>
               Drive with Confidence.<br />
               <span className={styles.heroAccent}>Learn the Right Way.</span>
@@ -253,6 +284,45 @@ export default function LandingPage() {
             </div>
           </motion.div>
         </div>
+
+        {/* Quick links to the 4 real services + the real cities served —
+            lets a visitor jump straight to what they need without
+            scrolling, and shows real local-area content near the top of
+            the page. */}
+        <motion.div
+          className={styles.heroBottomRow}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <div className={styles.heroServiceLinks}>
+            {heroServiceLinks.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link key={item.to} to={item.to} className={styles.heroServiceLink}>
+                  <span className={styles.heroServiceIcon}>
+                    <Icon aria-hidden="true" />
+                  </span>
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className={styles.heroCities}>
+            <p className={styles.heroCitiesLabel}>
+              <FaMapMarkerAlt aria-hidden="true" /> Serving {BUSINESS.serviceAreas.length}+ Bay Area &amp; Sacramento Cities
+            </p>
+            <p className={styles.heroCitiesList}>
+              {heroFeaturedCities.join(" • ")}
+              {" • "}
+              <Link to="/locations">
+                and {BUSINESS.serviceAreas.length - heroFeaturedCities.length} more →
+              </Link>
+            </p>
+          </div>
+        </motion.div>
       </section>
 
       {/* ════════════════════════════════
