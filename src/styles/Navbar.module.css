@@ -230,6 +230,27 @@
 }
 
 /* Login button (logged-out state) */
+/* Click-to-call pill — shown only on wide desktops, where there's room */
+.phoneBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  background: rgba(249, 115, 22, 0.14);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  transition: background 0.2s;
+}
+.phoneBtn:hover { background: rgba(249, 115, 22, 0.26); }
+
+@media (max-width: 1180px) {
+  .phoneBtn { display: none; }
+}
+
 .loginBtn {
   display: flex;
   align-items: center;

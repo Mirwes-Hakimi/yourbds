@@ -8,212 +8,512 @@
 }
 
 /* ─────────────────────────────────────────
-   HERO
+   HERO — navy sky with a sunset glow, white "Quick Book" card, trust bar
+   and a row of city tiles (modeled on the design mockup, minus the stock
+   photos: the bridge is a drawn SVG silhouette, the tiles link to real
+   city pages).
 ───────────────────────────────────────── */
 .hero {
-  background: #0b0c10;
-  min-height: 88vh;
-  display: flex;
-  /* column — heroInner and the new heroBottomRow below it must stack
-     vertically. Without this, flex's row default placed them side by
-     side, since heroInner used to be the section's only real child. */
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   position: relative;
   overflow: hidden;
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  padding: 2rem 1.5rem;
+  padding: 3.5rem 1.5rem 2.75rem;
+  background:
+    radial-gradient(ellipse 55% 42% at 80% 6%, rgba(255, 140, 40, 0.34), transparent 62%),
+    radial-gradient(ellipse 45% 35% at 8% 0%, rgba(255, 90, 40, 0.10), transparent 60%),
+    linear-gradient(180deg, #0a1f4d 0%, #0b2552 34%, #0a1735 72%, #0b0c10 100%);
 }
 
-/* Subtle dot-grid texture — replaces the old muddy multi-orb glow */
-.heroGridTexture {
+/* Decorative Golden Gate-style silhouette behind the content */
+.heroBridge {
   position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
-  background-size: 28px 28px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 90%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 90%);
+  left: 0;
+  right: 0;
+  bottom: 30%;
+  width: 100%;
+  height: 300px;
+  color: rgba(255, 150, 60, 0.2);
   pointer-events: none;
 }
 
-/* One clean, contained gradient glow instead of four blurred orbs */
-.heroGlow {
-  position: absolute;
-  top: -20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 900px;
-  height: 600px;
-  background: radial-gradient(ellipse, rgba(255,102,0,0.16) 0%, rgba(255,119,0,0.06) 45%, transparent 75%);
-  pointer-events: none;
-}
-
-/* ─────────────────────────────────────────
-   HERO LAYOUT — 2 columns on desktop
-───────────────────────────────────────── */
 .heroInner {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1180px;
+  max-width: 1240px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-columns: 1.5fr 0.8fr;
   align-items: center;
-  gap: 3.5rem;
-  padding: 3rem 0;
+  gap: 3rem;
+  padding: 1rem 0 2.5rem;
 }
 
 .heroLeft {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.25rem;
+  gap: 1.2rem;
   text-align: left;
 }
 
-.heroTitle {
-  font-size: clamp(2.5rem, 4.6vw, 4rem);
-  font-weight: 800;
-  color: #ffffff;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
-  margin: 0;
+.heroPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
-/* Small "📍 Bay Area & Sacramento, CA" pill above the headline */
 .heroLocationBadge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  margin: 0 0 -0.5rem;
-  padding: 0.35rem 0.9rem;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #ff9933;
-}
-
-/* ── Hero bottom row: service quick-links + served-cities list ── */
-.heroBottomRow {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 1180px;
-  margin: 0.5rem auto 0;
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 2rem;
-  padding: 1.75rem 0 0;
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
-
-.heroServiceLinks {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
-}
-
-.heroServiceLink {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.5rem;
-  padding: 0.85rem 0.5rem;
-  border-radius: 0.85rem;
-  color: #d1d5db;
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.3;
-  text-decoration: none;
-  border: 1px solid rgba(255,255,255,0.08);
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
-}
-
-.heroServiceLink:hover {
-  background: rgba(255,102,0,0.08);
-  border-color: rgba(255,119,0,0.3);
-  transform: translateY(-2px);
-}
-
-.heroServiceIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255,102,0,0.12);
-  color: #ff9933;
-  font-size: 1.05rem;
-}
-
-.heroCities {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.heroCitiesLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   margin: 0;
-  font-size: 0.85rem;
-  font-weight: 700;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: #ffffff;
 }
 
-.heroCitiesList {
+.heroLocationBadge svg {
+  color: #ff9933;
+}
+
+.heroTitle {
+  font-size: clamp(2.6rem, 5.2vw, 4.6rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
   margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  color: #9ca3af;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
 }
 
-.heroCitiesList a {
-  color: #f97316;
-  font-weight: 600;
-  text-decoration: underline;
-}
-
-.heroCitiesList a:hover {
-  color: #fb923c;
-}
-
-/* Orange accent on second line */
+/* Italic orange second line with a hand-drawn-style underline swoosh */
 .heroAccent {
-  background: linear-gradient(90deg, #ff6600, #ff9933);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.18em;
+  font-style: italic;
+  background: linear-gradient(90deg, #ff8a1f, #ffb347);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  text-shadow: none;
+}
+
+.heroAccent::after {
+  content: "";
+  position: absolute;
+  left: 1%;
+  right: 4%;
+  bottom: 0;
+  height: 5px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent, #ff8a1f 12%, #ffb347 88%, transparent);
+  transform: rotate(-1.2deg);
 }
 
 .heroSubtitle {
   font-size: 1.15rem;
-  color: #9ca3af;                /* muted gray — readable on dark bg */
-  max-width: 520px;
+  color: rgba(255, 255, 255, 0.86);
+  max-width: 560px;
   line-height: 1.6;
   margin: 0;
 }
 
-/* Two CTA buttons side by side */
+/* Three feature chips with dividers */
+.heroChips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 0;
+  margin: 0.2rem 0 0;
+  padding: 0;
+}
+
+.heroChips li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0 1.3rem;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.heroChips li:first-child {
+  padding-left: 0;
+}
+
+.heroChips li + li {
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.heroChips svg {
+  flex-shrink: 0;
+  font-size: 1.7rem;
+  color: #ffa733;
+}
+
 .heroBtns {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
 }
 
-/* Primary orange button */
+.heroBtns .btnPrimary {
+  padding: 1.05rem 2.3rem;
+  font-size: 1.08rem;
+  border-radius: 999px;
+}
+
+/* Click-to-call link */
+.heroCallLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.heroCallLink strong {
+  color: #ffb347;
+  font-weight: 700;
+}
+
+.heroCallLink:hover strong {
+  text-decoration: underline;
+}
+
+/* Low-emphasis "Create account" link — intentionally plain text, not a
+   button, so it doesn't compete with the booking/call CTAs. */
+.heroSecondaryLink {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.heroSecondaryLink:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* No-waiting-list availability callout */
+.availabilityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 1rem;
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #86efac;
+}
+
+.availabilityDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+  flex-shrink: 0;
+}
+
+/* ── White "Quick Book Your Lesson" card ── */
+.quickCard {
+  width: 100%;
+  max-width: 380px;
+  justify-self: end;
+  background: #ffffff;
+  color: #0f1b3d;
+  border-radius: 1.25rem;
+  padding: 1.6rem 1.5rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+
+.quickCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.15rem;
+}
+
+.quickCardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, #ff6600, #ffa733);
+  color: #ffffff;
+  font-size: 1.3rem;
+}
+
+.quickCardTitle {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0f1b3d;
+}
+
+.quickCardList {
+  list-style: none;
+  margin: 0 0 1.3rem;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.quickCardList li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.quickCardList svg {
+  flex-shrink: 0;
+  font-size: 1.15rem;
+  color: #f97316;
+}
+
+.quickCardBook {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.95rem 1.25rem;
+  background: linear-gradient(90deg, #ff6600, #ff8a1f);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3);
+  transition: filter 0.2s, transform 0.15s;
+}
+
+.quickCardBook:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.quickCardOr {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.85rem 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.quickCardOr::before,
+.quickCardOr::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.quickCardCall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  border: 2px solid #f97316;
+  border-radius: 999px;
+  color: #0f1b3d;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.quickCardCall svg {
+  color: #f97316;
+}
+
+.quickCardCall:hover {
+  background: rgba(249, 115, 22, 0.08);
+}
+
+/* ── White trust bar ── */
+.trustBar {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 0.95rem 1.25rem;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+
+.trustItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 0 0.75rem;
+  text-align: left;
+}
+
+.trustItem + .trustItem {
+  border-left: 1px solid #e2e8f0;
+}
+
+.trustItem strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #0f1b3d;
+}
+
+.trustItem span {
+  display: block;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: #475569;
+}
+
+.trustStars {
+  display: inline !important;
+  color: #f59e0b !important;
+  letter-spacing: 1px;
+}
+
+.trustGoogle {
+  flex-shrink: 0;
+  font-size: 1.9rem;
+  color: #4285f4;
+}
+
+.trustIcon {
+  flex-shrink: 0;
+  font-size: 1.9rem;
+  color: #1e3a8a;
+}
+
+.trustIconOrange {
+  flex-shrink: 0;
+  font-size: 1.9rem;
+  color: #f97316;
+}
+
+/* ── "Our Driving School Covers" city tiles ── */
+.coverage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1240px;
+  margin: 2.25rem auto 0;
+  text-align: center;
+}
+
+.coverageTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.coverageTitle::before,
+.coverageTitle::after {
+  content: "";
+  width: 90px;
+  height: 3px;
+  border-radius: 2px;
+  background: #ff8a1f;
+}
+
+.coverageGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.9rem;
+}
+
+.coverageTile {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 98px;
+  padding: 0.8rem 0.9rem;
+  border-radius: 1rem;
+  text-align: left;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+  background: linear-gradient(165deg, rgba(40, 88, 170, 0.95), rgba(11, 37, 82, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.coverageTile:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 138, 31, 0.7);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.coveragePin {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 138, 31, 0.2);
+  color: #ffa733;
+  font-size: 0.8rem;
+}
+
+.coverageAll {
+  display: inline-block;
+  margin-top: 1.1rem;
+  color: #ffb347;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.coverageAll:hover {
+  color: #ffd08a;
+}
+
+/* Primary orange button (shared — hero, packages CTA, final banner) */
 .btnPrimary {
   background: linear-gradient(90deg, #ff6600, #ff7700);
   color: #fff;
@@ -225,6 +525,11 @@
   transition: filter 0.2s, transform 0.15s, box-shadow 0.25s;
   display: inline-block;
   box-shadow: 0 8px 20px rgba(255,102,0,0.25);
+}
+
+.btnPrimary svg {
+  vertical-align: -2px;
+  margin-left: 0.45rem;
 }
 
 .btnPrimary:hover {
@@ -239,7 +544,7 @@
   box-shadow: 0 4px 12px rgba(255,102,0,0.3);
 }
 
-/* Secondary ghost button */
+/* Secondary ghost button (shared) */
 .btnSecondary {
   background: transparent;
   color: #ffb27a;
@@ -265,219 +570,31 @@
   background: rgba(255,102,0,0.16);
 }
 
-/* Click-to-call link */
-.heroCallLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #ff9933;
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-decoration: none;
-  margin-top: -0.25rem;
-  transition: color 0.2s;
-}
-
-.heroCallLink:hover {
-  color: #ffb266;
-  text-decoration: underline;
-}
-
-/* Low-emphasis "Create account" link — intentionally plain text, not a
-   button, so it doesn't compete with Explore Packages / Call us. */
-.heroSecondaryLink {
-  display: inline-block;
-  color: #9ca3af;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-decoration: none;
-  margin-top: -0.25rem;
-}
-
-.heroSecondaryLink:hover {
-  color: #d1d5db;
-  text-decoration: underline;
-}
-
-/* No-waiting-list availability callout */
-.availabilityBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.5rem 1rem;
-  background: rgba(74,222,128,0.08);
-  border: 1px solid rgba(74,222,128,0.3);
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #86efac;
-}
-
-.availabilityDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 0 3px rgba(74,222,128,0.18);
-  flex-shrink: 0;
-}
-
-/* Social proof badge */
-.socialProof {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 0.75rem;
-  padding: 0.6rem 1rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 999px;
-  font-size: 0.85rem;
-  color: #d1d5db;
-}
-
-.socialProofStars {
-  color: #ff9933;
-  letter-spacing: 1px;
-  font-size: 0.9rem;
-}
-
-.socialProofAvatars {
-  display: flex;
-  flex-shrink: 0;
-}
-
-.avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 2px solid #0b0c10;
-  margin-left: -8px;
-  color: #fff;
-  font-size: 0.7rem;
-  font-weight: 700;
-}
-
-.avatar:first-child {
-  margin-left: 0;
-}
-
-/* ─────────────────────────────────────────
-   HERO RIGHT — preview card
-───────────────────────────────────────── */
-.heroRight {
-  display: flex;
-  justify-content: center;
-}
-
-.heroCard {
-  position: relative;
-  width: 100%;
-  max-width: 380px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 1.25rem;
-  padding: 2rem 1.75rem;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 40px rgba(255,102,0,0.08);
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.heroCard:hover {
-  border-color: rgba(255,102,0,0.5);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 60px rgba(255,102,0,0.22);
-}
-
-.heroCardBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  background: linear-gradient(135deg, #ff6600, #ff9933);
-  border-radius: 0.85rem;
-  margin-bottom: 1.25rem;
-  color: #ffffff;
-  font-size: 1.5rem;
-  box-shadow: 0 8px 20px rgba(255,102,0,0.35);
-}
-
-.heroCardTitle {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin: 0 0 1.1rem;
-}
-
-.heroCardList {
-  list-style: none;
-  margin: 0 0 1.5rem;
-  padding: 0;
-  display: grid;
-  gap: 0.8rem;
-}
-
-.heroCardList li {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  color: #d1d5db;
-  font-size: 0.92rem;
-}
-
-.heroCardCheck {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  background: rgba(255,102,0,0.18);
-  color: #ff9933;
-  border-radius: 50%;
-  font-size: 0.7rem;
-  font-weight: 800;
-}
-
-.heroCardCta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  width: 100%;
-  padding: 0.9rem 1.25rem;
-  background: linear-gradient(90deg, #ff6600, #ff7700);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-  border-radius: 0.75rem;
-  box-shadow: 0 8px 20px rgba(255,102,0,0.28);
-  transition: filter 0.2s, transform 0.15s, box-shadow 0.25s;
-}
-
-.heroCardCta:hover {
-  filter: brightness(1.06);
-  transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(255,102,0,0.4);
-}
-
-.heroCardCta:active {
-  transform: translateY(0);
-  filter: brightness(0.97);
-}
-
 /* ─────────────────────────────────────────
    HERO — RESPONSIVE
 ───────────────────────────────────────── */
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+  .coverageGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .trustBar {
+    grid-template-columns: repeat(2, 1fr);
+    border-radius: 1.5rem;
+    gap: 0.9rem 0;
+    padding: 1rem 0.75rem;
+  }
+
+  /* Row dividers instead of the left-border ones once it wraps to 2 rows */
+  .trustItem:nth-child(3) {
+    border-left: none;
+  }
+}
+
+@media (max-width: 960px) {
   .heroInner {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
-    text-align: center;
+    gap: 2.25rem;
   }
 
   .heroLeft {
@@ -485,6 +602,8 @@
     text-align: center;
   }
 
+  .heroPills,
+  .heroChips,
   .heroBtns {
     justify-content: center;
   }
@@ -493,21 +612,26 @@
     max-width: 100%;
   }
 
-  .heroRight {
-    order: 2;
-  }
-
-  .heroBottomRow {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .heroCitiesLabel {
-    justify-content: center;
+  .quickCard {
+    justify-self: center;
+    max-width: 460px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
+  .hero {
+    padding: 2.5rem 1rem 2rem;
+  }
+
+  .heroChips li {
+    padding: 0 0.8rem;
+    font-size: 0.82rem;
+  }
+
+  .heroChips svg {
+    font-size: 1.4rem;
+  }
+
   .heroBtns {
     flex-direction: column;
     width: 100%;
@@ -519,8 +643,26 @@
     text-align: center;
   }
 
-  .heroServiceLinks {
+  .trustBar {
+    grid-template-columns: 1fr;
+  }
+
+  .trustItem {
+    justify-content: flex-start;
+    padding: 0 0.75rem;
+  }
+
+  .trustItem + .trustItem {
+    border-left: none;
+  }
+
+  .coverageGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .coverageTitle::before,
+  .coverageTitle::after {
+    width: 36px;
   }
 }
 

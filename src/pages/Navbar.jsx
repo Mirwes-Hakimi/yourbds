@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaSignOutAlt, FaPhoneAlt } from "react-icons/fa";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useAuth } from "../components/AuthContext";
 import styles from "../styles/Navbar.module.css";
 import Logo from "../components/Logo";
+import { SCHOOL_PHONE, SCHOOL_PHONE_TEL } from "../siteConfig";
 
 // Links shown in the main nav row, before the "Services" dropdown
 const NAV_LINKS = [
@@ -105,6 +106,12 @@ export default function Navbar() {
 
       {/* ── Desktop right side: auth + Book Now ── */}
       <div className={styles.desktopRight}>
+        {/* Click-to-call — hidden on narrower desktops (see .phoneBtn CSS)
+            where the nav is already tight; the hero has its own call button. */}
+        <a href={`tel:${SCHOOL_PHONE_TEL}`} className={styles.phoneBtn}>
+          <FaPhoneAlt aria-hidden="true" /> {SCHOOL_PHONE}
+        </a>
+
         {user ? (
           // Logged in: show email + logout button
           <>

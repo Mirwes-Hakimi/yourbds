@@ -5,14 +5,15 @@ import styles from "../styles/LandingPage.module.css";
 import { useAuth } from "../components/AuthContext";
 import { SCHOOL_PHONE, SCHOOL_PHONE_TEL, SCHOOL_ADDRESS, BUSINESS } from "../siteConfig";
 import {
-  FaCarSide,
   FaArrowRight,
   FaGoogle,
   FaMapMarkerAlt,
-  FaUserGraduate,
-  FaUserTie,
-  FaClipboardCheck,
-  FaKey,
+  FaShieldAlt,
+  FaCalendarAlt,
+  FaCalendarCheck,
+  FaCar,
+  FaCheckCircle,
+  FaPhoneAlt,
 } from "react-icons/fa";
 import SEOHead from "../components/SEOHead";
 import {
@@ -37,23 +38,76 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-// ── Hero quick-links — the 4 real services (matches ServicesPage.jsx),
-// shown as an icon row in the hero so a visitor can jump straight to the
-// one they need instead of scrolling.
-const heroServiceLinks = [
-  { icon: FaUserGraduate, label: "Teen Driving Lessons", to: "/services/teen-driving-lessons" },
-  { icon: FaUserTie, label: "Adult Driving Lessons", to: "/services/adult-driving-lessons" },
-  { icon: FaClipboardCheck, label: "DMV Test Preparation", to: "/services/dmv-test-preparation" },
-  { icon: FaKey, label: "DMV Test Car Rental", to: "/services/dmv-test-car-rental" },
+// ── "Our Driving School Covers" tiles in the hero. Each links to that
+// city's own page (src/data/cityPages.js — keep these slugs in sync).
+// Sacramento has no dedicated page yet, so it points at the full
+// service-area list. cityPages.js isn't imported here on purpose: it's
+// ~40 KB of city copy that would otherwise get bundled into the landing
+// page's first load.
+const coverageCities = [
+  { name: "San Francisco", to: "/locations/san-francisco" },
+  { name: "Oakland",       to: "/locations/oakland" },
+  { name: "Hayward",       to: "/locations/hayward" },
+  { name: "Concord",       to: "/locations/concord" },
+  { name: "San Ramon",     to: "/locations/san-ramon" },
+  { name: "Pleasanton",    to: "/locations/pleasanton" },
+  { name: "Dublin",        to: "/locations/dublin" },
+  { name: "Sacramento",    to: "/locations" },
 ];
 
-// A representative, real subset of the 40 served cities (full list and
-// ZIP-based pricing lookup live on /packages and /locations) — enough to
-// show real geographic spread without listing all 40 in the hero.
-const heroFeaturedCities = [
-  "San Francisco", "Oakland", "Hayward", "Fremont", "Concord",
-  "Walnut Creek", "Pleasanton", "Dublin", "Sacramento", "Elk Grove",
+// Decorative Golden Gate-style bridge silhouette drawn in SVG (not a photo,
+// so no stock/AI imagery). Cable curves are quadratic Bézier curves; the
+// vertical hangers are computed along each curve so they land exactly on
+// the cable.
+const BRIDGE_SPANS = [
+  { p: [[0, 198], [170, 172], [330, 44]], hangers: 9 },
+  { p: [[330, 44], [600, 256], [870, 44]], hangers: 30 },
+  { p: [[870, 44], [1030, 172], [1200, 198]], hangers: 9 },
 ];
+const BRIDGE_DECK_Y = 208;
+const bridgePoint = ([p0, p1, p2], t) => ({
+  x: (1 - t) * (1 - t) * p0[0] + 2 * t * (1 - t) * p1[0] + t * t * p2[0],
+  y: (1 - t) * (1 - t) * p0[1] + 2 * t * (1 - t) * p1[1] + t * t * p2[1],
+});
+
+function HeroBridge() {
+  return (
+    <svg
+      className={styles.heroBridge}
+      viewBox="0 0 1200 270"
+      preserveAspectRatio="xMidYMax slice"
+      aria-hidden="true"
+    >
+      <g fill="none" stroke="currentColor" strokeLinecap="round">
+        {BRIDGE_SPANS.map(({ p, hangers }, i) => (
+          <g key={i}>
+            <path
+              d={`M${p[0][0]} ${p[0][1]} Q${p[1][0]} ${p[1][1]} ${p[2][0]} ${p[2][1]}`}
+              strokeWidth="3"
+            />
+            {Array.from({ length: hangers }, (_, k) => {
+              const pt = bridgePoint(p, (k + 1) / (hangers + 1));
+              return (
+                <line key={k} x1={pt.x} y1={pt.y} x2={pt.x} y2={BRIDGE_DECK_Y} strokeWidth="1.2" />
+              );
+            })}
+          </g>
+        ))}
+        <line x1="0" y1={BRIDGE_DECK_Y} x2="1200" y2={BRIDGE_DECK_Y} strokeWidth="7" />
+        {[330, 870].map((x) => (
+          <g key={x} strokeWidth="5">
+            <line x1={x - 9} y1="40" x2={x - 9} y2="270" />
+            <line x1={x + 9} y1="40" x2={x + 9} y2="270" />
+            {[62, 104, 146].map((y) => (
+              <line key={y} x1={x - 9} y1={y} x2={x + 9} y2={y} strokeWidth="4" />
+            ))}
+            <line x1={x - 11} y1="40" x2={x + 11} y2="40" strokeWidth="6" />
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}
 
 // ── Why Choose Us cards ──
 const features = [
@@ -84,7 +138,7 @@ const features = [
   },
   {
     icon: "📍",
-    title: "20+ Cities Covered",
+    title: `${BUSINESS.serviceAreas.length}+ Cities Covered`,
     desc: "Serving the Bay Area and the Sacramento region, from San Francisco to Elk Grove.",
   },
 ];
@@ -111,7 +165,7 @@ const steps = [
 // ── Stats ──
 const stats = [
   { value: "500+", label: "Students Trained" },
-  { value: "20+",  label: "Cities Served" },
+  { value: `${BUSINESS.serviceAreas.length}+`, label: "Cities Served" },
   { value: "5★",   label: "Average Rating" },
   { value: "100%", label: "DMV Pass Rate" },
 ];
@@ -180,9 +234,7 @@ export default function LandingPage() {
            HERO SECTION
           ════════════════════════════════ */}
       <section className={styles.hero}>
-        {/* Subtle grid texture + gradient backdrop — purely decorative */}
-        <div className={styles.heroGridTexture} />
-        <div className={styles.heroGlow} />
+        <HeroBridge />
 
         <div className={styles.heroInner}>
           <motion.div
@@ -191,9 +243,17 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9 }}
           >
-            <p className={styles.heroLocationBadge}>
-              <FaMapMarkerAlt aria-hidden="true" /> Bay Area &amp; Sacramento, CA
-            </p>
+            <div className={styles.heroPills}>
+              <p className={styles.heroLocationBadge}>
+                <FaMapMarkerAlt aria-hidden="true" /> Bay Area &amp; Sacramento
+              </p>
+              {/* No-waiting-list callout — instructors have real openings,
+                  unlike schools that put new students on a waitlist. */}
+              <div className={styles.availabilityBadge}>
+                <span className={styles.availabilityDot} aria-hidden="true" />
+                No waiting list, instructors available now
+              </div>
+            </div>
 
             <h1 className={styles.heroTitle}>
               Drive with Confidence.<br />
@@ -206,123 +266,120 @@ export default function LandingPage() {
               pick-up from your door.
             </p>
 
-            {/* No-waiting-list callout — instructors have real openings,
-                unlike schools that put new students on a waitlist. */}
-            <div className={styles.availabilityBadge}>
-              <span className={styles.availabilityDot} aria-hidden="true" />
-              No waiting list, instructors available now
-            </div>
+            <ul className={styles.heroChips}>
+              <li>
+                <FaShieldAlt aria-hidden="true" />
+                <span>Certified<br />Instructors</span>
+              </li>
+              <li>
+                <FaCalendarAlt aria-hidden="true" />
+                <span>Flexible<br />Scheduling</span>
+              </li>
+              <li>
+                <FaCar aria-hidden="true" />
+                <span>Door-to-Door<br />Pick-up</span>
+              </li>
+            </ul>
 
-            {/* CTA buttons — just the one primary action. "Create Account" used
-                to sit here as a full button, competing for attention with the
-                booking/call CTAs that actually convert; it's now a small,
-                low-emphasis link below instead (see heroSecondaryLink). */}
             <div className={styles.heroBtns}>
               <Link to="/packages" className={styles.btnPrimary}>
-                Explore Packages
+                Book Your Driving Lesson <FaArrowRight aria-hidden="true" />
               </Link>
             </div>
 
             {/* Click-to-call — easy to spot for anyone who'd rather just phone in */}
             <a href={`tel:${SCHOOL_PHONE_TEL}`} className={styles.heroCallLink}>
-              <span aria-hidden="true">📞</span> Call us: {SCHOOL_PHONE}
+              <FaPhoneAlt aria-hidden="true" /> Call us: <strong>{SCHOOL_PHONE}</strong>
             </a>
 
             {/* De-emphasized on purpose — an account isn't required to book,
-                so it shouldn't visually compete with Explore Packages / Call. */}
+                so it shouldn't visually compete with the booking/call CTAs. */}
             {!user && (
               <Link to="/signup" className={styles.heroSecondaryLink}>
                 New here? Create an account →
               </Link>
             )}
-
-            {/* Social proof badge */}
-            <div className={styles.socialProof}>
-              <div className={styles.socialProofAvatars} aria-hidden="true">
-                <span className={styles.avatar} style={{ background: "#ea580c" }}>J</span>
-                <span className={styles.avatar} style={{ background: "#0891b2" }}>M</span>
-                <span className={styles.avatar} style={{ background: "#7c3aed" }}>A</span>
-                <span className={styles.avatar} style={{ background: "#16a34a" }}>S</span>
-              </div>
-              <span className={styles.socialProofStars} aria-hidden="true">★★★★★</span>
-              <span>5.0 Rating &nbsp;|&nbsp; 500+ Students Trained in the Bay Area & Sacramento</span>
-            </div>
           </motion.div>
 
-          <motion.div
-            className={styles.heroRight}
+          <motion.aside
+            className={styles.quickCard}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.15 }}
           >
-            <div className={styles.heroCard}>
-              <div className={styles.heroCardBadge}>
-                <FaCarSide />
-              </div>
-              <h3 className={styles.heroCardTitle}>Your First Lesson</h3>
-              <ul className={styles.heroCardList}>
-                <li>
-                  <span className={styles.heroCardCheck}>✓</span>
-                  Certified, DMV-approved instructors
-                </li>
-                <li>
-                  <span className={styles.heroCardCheck}>✓</span>
-                  Pick-up &amp; drop-off included
-                </li>
-                <li>
-                  <span className={styles.heroCardCheck}>✓</span>
-                  No waiting list, flexible scheduling 7 days a week
-                </li>
-                <li>
-                  <span className={styles.heroCardCheck}>✓</span>
-                  Pay later or online, your choice
-                </li>
-              </ul>
-              <Link to="/packages" className={styles.heroCardCta}>
-                Quick Book, Save $20 <FaArrowRight aria-hidden="true" />
-              </Link>
+            <div className={styles.quickCardHeader}>
+              <span className={styles.quickCardIcon}>
+                <FaCalendarAlt aria-hidden="true" />
+              </span>
+              <h2 className={styles.quickCardTitle}>Quick Book Your Lesson</h2>
             </div>
-          </motion.div>
+            <ul className={styles.quickCardList}>
+              <li><FaCheckCircle aria-hidden="true" /> Certified, DMV-approved instructors</li>
+              <li><FaCheckCircle aria-hidden="true" /> Pick-up &amp; drop-off included</li>
+              <li><FaCheckCircle aria-hidden="true" /> No waiting list, start today!</li>
+              <li><FaCheckCircle aria-hidden="true" /> Pay later or online, your choice</li>
+            </ul>
+            <Link to="/packages" className={styles.quickCardBook}>
+              Book Now, Save $20 <FaArrowRight aria-hidden="true" />
+            </Link>
+            <p className={styles.quickCardOr}><span>or</span></p>
+            <a href={`tel:${SCHOOL_PHONE_TEL}`} className={styles.quickCardCall}>
+              <FaPhoneAlt aria-hidden="true" /> {SCHOOL_PHONE}
+            </a>
+          </motion.aside>
         </div>
 
-        {/* Quick links to the 4 real services + the real cities served —
-            lets a visitor jump straight to what they need without
-            scrolling, and shows real local-area content near the top of
-            the page. */}
-        <motion.div
-          className={styles.heroBottomRow}
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <div className={styles.heroServiceLinks}>
-            {heroServiceLinks.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link key={item.to} to={item.to} className={styles.heroServiceLink}>
-                  <span className={styles.heroServiceIcon}>
-                    <Icon aria-hidden="true" />
-                  </span>
-                  {item.label}
-                </Link>
-              );
-            })}
+        {/* Trust bar — real claims only. (The mockup this was modeled on
+            said "Most Affordable in the East Bay"; that's an unverifiable
+            superlative, so it's the no-waiting-list point instead.) */}
+        <div className={styles.trustBar}>
+          <div className={styles.trustItem}>
+            <FaGoogle className={styles.trustGoogle} aria-hidden="true" />
+            <div>
+              <strong>5.0 Rating</strong>
+              <span><span className={styles.trustStars}>★★★★★</span> 500+ Happy Students</span>
+            </div>
           </div>
+          <div className={styles.trustItem}>
+            <FaShieldAlt className={styles.trustIcon} aria-hidden="true" />
+            <div>
+              <strong>DMV-Approved</strong>
+              <span>Certified Instructors</span>
+            </div>
+          </div>
+          <div className={styles.trustItem}>
+            <FaCalendarCheck className={styles.trustIcon} aria-hidden="true" />
+            <div>
+              <strong>No Waiting List</strong>
+              <span>Instructors available now</span>
+            </div>
+          </div>
+          <div className={styles.trustItem}>
+            <FaMapMarkerAlt className={styles.trustIconOrange} aria-hidden="true" />
+            <div>
+              <strong>Serving: Hayward, Concord,</strong>
+              <span>San Ramon, Pleasanton &amp; More</span>
+            </div>
+          </div>
+        </div>
 
-          <div className={styles.heroCities}>
-            <p className={styles.heroCitiesLabel}>
-              <FaMapMarkerAlt aria-hidden="true" /> Serving {BUSINESS.serviceAreas.length}+ Bay Area &amp; Sacramento Cities
-            </p>
-            <p className={styles.heroCitiesList}>
-              {heroFeaturedCities.join(" • ")}
-              {" • "}
-              <Link to="/locations">
-                and {BUSINESS.serviceAreas.length - heroFeaturedCities.length} more →
+        {/* "Our Driving School Covers" — links to real city pages */}
+        <div className={styles.coverage}>
+          <h2 className={styles.coverageTitle}>Our Driving School Covers</h2>
+          <div className={styles.coverageGrid}>
+            {coverageCities.map((c) => (
+              <Link key={c.name} to={c.to} className={styles.coverageTile}>
+                <span className={styles.coveragePin}>
+                  <FaMapMarkerAlt aria-hidden="true" />
+                </span>
+                {c.name}
               </Link>
-            </p>
+            ))}
           </div>
-        </motion.div>
+          <Link to="/locations" className={styles.coverageAll}>
+            See all {BUSINESS.serviceAreas.length} service areas →
+          </Link>
+        </div>
       </section>
 
       {/* ════════════════════════════════
