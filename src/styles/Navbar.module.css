@@ -271,6 +271,8 @@
 
 /* Book Now — solid orange CTA, always visible */
 .bookBtn {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(90deg, #ea580c, #f97316);
   color: #fff;
   text-decoration: none;
@@ -280,6 +282,37 @@
   border-radius: 0.5rem;
   transition: filter 0.2s, transform 0.15s;
   white-space: nowrap;
+  animation: bookPulse 2.8s ease-out 2s infinite;
+}
+
+/* Glossy sweep across the Book Now button every few seconds */
+.bookBtn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: translateX(-140%) skewX(-20deg);
+  animation: bookShine 4s ease-in-out 2.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes bookPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.5); }
+  70%  { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+}
+
+@keyframes bookShine {
+  0%        { transform: translateX(-140%) skewX(-20deg); }
+  55%, 100% { transform: translateX(380%) skewX(-20deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bookBtn,
+  .bookBtn::before { animation: none; }
 }
 
 .bookBtn:hover {

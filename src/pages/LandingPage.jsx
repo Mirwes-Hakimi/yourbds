@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import styles from "../styles/LandingPage.module.css";
@@ -70,6 +70,36 @@ const bridgePoint = ([p0, p1, p2], t) => ({
   y: (1 - t) * (1 - t) * p0[1] + 2 * t * (1 - t) * p1[1] + t * t * p2[1],
 });
 
+// Returns [ref, shown]: `shown` flips to true the first time the element
+// scrolls into view (then stops observing). Used to play the trust bar /
+// city tile entrance animation when people actually reach them, not on load.
+function useRevealOnScroll() {
+  const ref = useRef(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    if (typeof IntersectionObserver === "undefined") {
+      setShown(true);
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShown(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return [ref, shown];
+}
+
 function HeroBridge() {
   return (
     <svg
@@ -82,20 +112,38 @@ function HeroBridge() {
         {BRIDGE_SPANS.map(({ p, hangers }, i) => (
           <g key={i}>
             <path
+              className={styles.bridgeCable}
+              pathLength="1"
               d={`M${p[0][0]} ${p[0][1]} Q${p[1][0]} ${p[1][1]} ${p[2][0]} ${p[2][1]}`}
               strokeWidth="3"
             />
             {Array.from({ length: hangers }, (_, k) => {
               const pt = bridgePoint(p, (k + 1) / (hangers + 1));
               return (
-                <line key={k} x1={pt.x} y1={pt.y} x2={pt.x} y2={BRIDGE_DECK_Y} strokeWidth="1.2" />
+                <line
+                  key={k}
+                  className={styles.bridgeHanger}
+                  x1={pt.x}
+                  y1={pt.y}
+                  x2={pt.x}
+                  y2={BRIDGE_DECK_Y}
+                  strokeWidth="1.2"
+                />
               );
             })}
           </g>
         ))}
-        <line x1="0" y1={BRIDGE_DECK_Y} x2="1200" y2={BRIDGE_DECK_Y} strokeWidth="7" />
+        <line
+          className={styles.bridgeDeck}
+          pathLength="1"
+          x1="0"
+          y1={BRIDGE_DECK_Y}
+          x2="1200"
+          y2={BRIDGE_DECK_Y}
+          strokeWidth="7"
+        />
         {[330, 870].map((x) => (
-          <g key={x} strokeWidth="5">
+          <g key={x} className={styles.bridgeTower} strokeWidth="5">
             <line x1={x - 9} y1="40" x2={x - 9} y2="270" />
             <line x1={x + 9} y1="40" x2={x + 9} y2="270" />
             {[62, 104, 146].map((y) => (
@@ -219,6 +267,8 @@ const studentPhotos = Array.from({ length: 7 }, (_, i) => {
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState(0);
   const { user } = useAuth();
+  const [trustRef, trustShown] = useRevealOnScroll();
+  const [coverageRef, coverageShown] = useRevealOnScroll();
 
   return (
     <div className={styles.page}>
@@ -332,7 +382,10 @@ export default function LandingPage() {
         {/* Trust bar — real claims only. (The mockup this was modeled on
             said "Most Affordable in the East Bay"; that's an unverifiable
             superlative, so it's the no-waiting-list point instead.) */}
-        <div className={styles.trustBar}>
+        <div
+          ref={trustRef}
+          className={`${styles.trustBar} ${trustShown ? styles.revealShown : styles.revealHidden}`}
+        >
           <div className={styles.trustItem}>
             <FaGoogle className={styles.trustGoogle} aria-hidden="true" />
             <div>
@@ -364,7 +417,10 @@ export default function LandingPage() {
         </div>
 
         {/* "Our Driving School Covers" — links to real city pages */}
-        <div className={styles.coverage}>
+        <div
+          ref={coverageRef}
+          className={`${styles.coverage} ${coverageShown ? styles.revealShown : styles.revealHidden}`}
+        >
           <h2 className={styles.coverageTitle}>Our Driving School Covers</h2>
           <div className={styles.coverageGrid}>
             {coverageCities.map((c) => (
