@@ -108,7 +108,11 @@ export default function Navbar() {
       <div className={styles.desktopRight}>
         {/* Click-to-call — hidden on narrower desktops (see .phoneBtn CSS)
             where the nav is already tight; the hero has its own call button. */}
-        <a href={`tel:${SCHOOL_PHONE_TEL}`} className={styles.phoneBtn}>
+        <a
+          href={`tel:${SCHOOL_PHONE_TEL}`}
+          className={styles.phoneBtn}
+          aria-label={`Call Best Driving School at ${SCHOOL_PHONE}`}
+        >
           <FaPhoneAlt aria-hidden="true" /> {SCHOOL_PHONE}
         </a>
 
@@ -135,15 +139,20 @@ export default function Navbar() {
           Book Now
         </Link>
       </div>
-
-      {/* ── Mobile hamburger button ── */}
-      <button
-        className={styles.hamburger}
-        onClick={() => setMenuOpen((v) => !v)}
-        aria-label={menuOpen ? "Close menu" : "Open menu"}
-      >
-        {menuOpen ? <FaTimes /> : <FaBars />}
-      </button>
+      {/* ── Mobile: compact Book Now + hamburger ── */}
+      <div className={styles.mobileActions}>
+        <Link to="/packages" className={styles.mobileCta} onClick={() => setMenuOpen(false)}>
+          Book Now
+        </Link>
+        <button
+          className={styles.hamburger}
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+        >
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      </div>
 
       {/* ── Mobile slide-down menu ── */}
       {menuOpen && (

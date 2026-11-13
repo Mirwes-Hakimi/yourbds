@@ -1,0 +1,289 @@
+/* ─────────────────────────────────────────
+   QUICK BOOK CARD — white interactive widget in the landing hero.
+   Colors are chosen to meet WCAG AA: navy text on the bright orange
+   button (6.4:1), 3.5:1 field borders, 4.7:1+ for hint/placeholder text.
+   Spacing/radius use the tokens defined on the hero (--sp-*, --r-*), with
+   fallbacks so the card also works outside it.
+───────────────────────────────────────── */
+.card {
+  width: 100%;
+  background: #ffffff;
+  color: #0f1b3d;
+  border-radius: var(--r-lg, 1.25rem);
+  padding: var(--sp-4, 1.5rem);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3, 1rem);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2, 0.75rem);
+}
+
+.headerIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md, 1rem);
+  background: linear-gradient(135deg, #ff8a1f, #ffa733);
+  color: #0b2552;
+  font-size: 1.25rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0f1b3d;
+}
+
+.sub {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: var(--sp-2, 0.75rem);
+}
+
+.label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #475569;
+}
+
+/* 16px text so iPhone Safari doesn't zoom the page when a field is focused */
+.control {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 0.85rem;
+  font: inherit;
+  font-size: 1rem;
+  color: #0f1b3d;
+  background: #ffffff;
+  border: 1.5px solid #7c8aa0;
+  border-radius: var(--r-sm, 0.6rem);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+select.control {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.2rem;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c2410c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+}
+
+.control::placeholder {
+  color: #64748b;
+}
+
+.control:hover {
+  border-color: #475569;
+}
+
+.control:focus-visible {
+  outline: none;
+  border-color: #c2410c;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
+}
+
+/* One live line under the fields — hint, price, or error */
+.status,
+.error {
+  margin: 0;
+  min-height: 2.6em;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.status {
+  color: #475569;
+}
+
+.error {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.was {
+  color: #64748b;
+}
+
+.now {
+  color: #0f1b3d;
+  font-size: 1.05rem;
+}
+
+/* Primary action — bright orange with navy text (AA), same look as the
+   navbar Book Now so there's one consistent "main button" style. */
+.book {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.85rem 1.25rem;
+  border: 0;
+  border-radius: var(--r-pill, 999px);
+  background: linear-gradient(90deg, #ff8a1f, #ffa733);
+  color: #0b2552;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3);
+  transition: filter 0.2s, transform 0.15s;
+  animation: glowPulse 2.6s ease-out 1.4s infinite;
+}
+
+.book:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  animation: none;
+}
+
+.book:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.book:focus-visible,
+.call a:focus-visible,
+.signup:focus-visible {
+  outline: 3px solid #0b2552;
+  outline-offset: 3px;
+}
+
+/* Glossy sweep every few seconds + a nudging arrow */
+.book::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 38%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(-140%) skewX(-20deg);
+  animation: shineSweep 3.8s ease-in-out 1.2s infinite;
+  pointer-events: none;
+}
+
+.book svg {
+  animation: arrowNudge 1.7s ease-in-out infinite;
+}
+
+.perks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 0.9rem;
+}
+
+.perks li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.perks svg {
+  color: #ea580c;
+  flex-shrink: 0;
+}
+
+.call {
+  margin: 0;
+  text-align: center;
+  font-size: 0.92rem;
+  color: #475569;
+}
+
+.call a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #0f1b3d;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.call a svg {
+  color: #c2410c;
+}
+
+.call a:hover {
+  text-decoration: underline;
+}
+
+.signup {
+  align-self: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #475569;
+  text-decoration: none;
+}
+
+.signup:hover {
+  color: #0f1b3d;
+  text-decoration: underline;
+}
+
+@keyframes shineSweep {
+  0%        { transform: translateX(-140%) skewX(-20deg); }
+  55%, 100% { transform: translateX(380%) skewX(-20deg); }
+}
+
+@keyframes glowPulse {
+  0%   { box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3), 0 0 0 0 rgba(255, 138, 31, 0.55); }
+  70%  { box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3), 0 0 0 16px rgba(255, 138, 31, 0); }
+  100% { box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3), 0 0 0 0 rgba(255, 138, 31, 0); }
+}
+
+@keyframes arrowNudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book,
+  .book::before,
+  .book svg {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .card {
+    padding: 1.25rem;
+    gap: 0.85rem;
+  }
+}

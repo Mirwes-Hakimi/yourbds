@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import styles from "../styles/LandingPage.module.css";
-import { useAuth } from "../components/AuthContext";
-import { SCHOOL_PHONE, SCHOOL_PHONE_TEL, SCHOOL_ADDRESS, BUSINESS } from "../siteConfig";
+import { SCHOOL_ADDRESS, BUSINESS } from "../siteConfig";
 import {
   FaArrowRight,
   FaGoogle,
@@ -12,10 +11,9 @@ import {
   FaCalendarAlt,
   FaCalendarCheck,
   FaCar,
-  FaCheckCircle,
-  FaPhoneAlt,
 } from "react-icons/fa";
 import SEOHead from "../components/SEOHead";
+import QuickBookCard from "../components/QuickBookCard";
 import {
   buildLocalBusinessSchema,
   buildOrganizationSchema,
@@ -266,7 +264,6 @@ const studentPhotos = Array.from({ length: 7 }, (_, i) => {
 
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState(0);
-  const { user } = useAuth();
   const [trustRef, trustShown] = useRevealOnScroll();
   const [coverageRef, coverageShown] = useRevealOnScroll();
 
@@ -293,7 +290,9 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9 }}
           >
-            <div className={styles.heroPills}>
+            {/* Two pills on desktop; on phones the CSS merges them into one
+                compact status bar (and swaps in the shorter availability text). */}
+            <div className={styles.heroStatus}>
               <p className={styles.heroLocationBadge}>
                 <FaMapMarkerAlt aria-hidden="true" /> Bay Area &amp; Sacramento
               </p>
@@ -301,7 +300,8 @@ export default function LandingPage() {
                   unlike schools that put new students on a waitlist. */}
               <div className={styles.availabilityBadge}>
                 <span className={styles.availabilityDot} aria-hidden="true" />
-                No waiting list, instructors available now
+                <span className={styles.badgeLong}>No waiting list, instructors available now</span>
+                <span className={styles.badgeShort}>No waiting list</span>
               </div>
             </div>
 
@@ -331,51 +331,21 @@ export default function LandingPage() {
               </li>
             </ul>
 
-            <div className={styles.heroBtns}>
-              <Link to="/packages" className={styles.btnPrimary}>
-                Book Your Driving Lesson <FaArrowRight aria-hidden="true" />
-              </Link>
-            </div>
-
-            {/* Click-to-call — easy to spot for anyone who'd rather just phone in */}
-            <a href={`tel:${SCHOOL_PHONE_TEL}`} className={styles.heroCallLink}>
-              <FaPhoneAlt aria-hidden="true" /> Call us: <strong>{SCHOOL_PHONE}</strong>
-            </a>
-
-            {/* De-emphasized on purpose — an account isn't required to book,
-                so it shouldn't visually compete with the booking/call CTAs. */}
-            {!user && (
-              <Link to="/signup" className={styles.heroSecondaryLink}>
-                New here? Create an account →
-              </Link>
-            )}
+            {/* Secondary on purpose: the Quick Book card is the main
+                conversion action, so this is just a way to browse everything.
+                Hidden on phones, where the card sits right below the copy. */}
+            <Link to="/packages" className={styles.btnGhost}>
+              View packages &amp; pricing <FaArrowRight aria-hidden="true" />
+            </Link>
           </motion.div>
 
           <motion.aside
-            className={styles.quickCard}
+            className={styles.heroAside}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.15 }}
           >
-            <div className={styles.quickCardHeader}>
-              <span className={styles.quickCardIcon}>
-                <FaCalendarAlt aria-hidden="true" />
-              </span>
-              <h2 className={styles.quickCardTitle}>Quick Book Your Lesson</h2>
-            </div>
-            <ul className={styles.quickCardList}>
-              <li><FaCheckCircle aria-hidden="true" /> Certified, DMV-approved instructors</li>
-              <li><FaCheckCircle aria-hidden="true" /> Pick-up &amp; drop-off included</li>
-              <li><FaCheckCircle aria-hidden="true" /> No waiting list, start today!</li>
-              <li><FaCheckCircle aria-hidden="true" /> Pay later or online, your choice</li>
-            </ul>
-            <Link to="/packages" className={styles.quickCardBook}>
-              Book Now, Save $20 <FaArrowRight aria-hidden="true" />
-            </Link>
-            <p className={styles.quickCardOr}><span>or</span></p>
-            <a href={`tel:${SCHOOL_PHONE_TEL}`} className={styles.quickCardCall}>
-              <FaPhoneAlt aria-hidden="true" /> {SCHOOL_PHONE}
-            </a>
+            <QuickBookCard />
           </motion.aside>
         </div>
 
@@ -390,7 +360,9 @@ export default function LandingPage() {
             <FaGoogle className={styles.trustGoogle} aria-hidden="true" />
             <div>
               <strong>5.0 Rating</strong>
-              <span><span className={styles.trustStars}>★★★★★</span> 500+ Happy Students</span>
+              <span>
+                <span className={styles.trustStars} aria-hidden="true">★★★★★</span> 500+ Happy Students
+              </span>
             </div>
           </div>
           <div className={styles.trustItem}>
@@ -410,8 +382,8 @@ export default function LandingPage() {
           <div className={styles.trustItem}>
             <FaMapMarkerAlt className={styles.trustIconOrange} aria-hidden="true" />
             <div>
-              <strong>Serving: Hayward, Concord,</strong>
-              <span>San Ramon, Pleasanton &amp; More</span>
+              <strong>Serving {BUSINESS.serviceAreas.length}+ Cities</strong>
+              <span>Bay Area &amp; Sacramento</span>
             </div>
           </div>
         </div>

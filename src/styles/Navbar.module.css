@@ -237,15 +237,15 @@
   gap: 0.45rem;
   color: #ffffff;
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  padding: 0.4rem 0.9rem;
-  border-radius: 9999px;
-  background: rgba(249, 115, 22, 0.14);
-  border: 1px solid rgba(249, 115, 22, 0.4);
-  transition: background 0.2s;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+  transition: color 0.2s;
 }
-.phoneBtn:hover { background: rgba(249, 115, 22, 0.26); }
+.phoneBtn svg { color: #f97316; }
+.phoneBtn:hover { color: #ffb347; text-decoration: underline; }
 
 @media (max-width: 1180px) {
   .phoneBtn { display: none; }
@@ -258,28 +258,24 @@
   color: #d1d5db;
   text-decoration: none;
   font-size: 0.875rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: color 0.2s, background 0.2s;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.4rem;
+  transition: color 0.2s;
 }
 
-.loginBtn:hover {
-  color: #ffffff;
-  background: rgba(249, 115, 22, 0.08);
-}
+.loginBtn:hover { color: #ffffff; text-decoration: underline; }
 
 /* Book Now — solid orange CTA, always visible */
 .bookBtn {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(90deg, #ea580c, #f97316);
-  color: #fff;
+  background: linear-gradient(90deg, #ff8a1f, #ffa733);
+  color: #0b2552;
   text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 700;
-  padding: 0.45rem 1.1rem;
-  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  padding: 0.55rem 1.35rem;
+  border-radius: 9999px;
   transition: filter 0.2s, transform 0.15s;
   white-space: nowrap;
   animation: bookPulse 2.8s ease-out 2s infinite;
@@ -316,8 +312,46 @@
 }
 
 .bookBtn:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.05);
   transform: translateY(-1px);
+}
+
+.bookBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.bookBtn:focus-visible,
+.mobileCta:focus-visible,
+.phoneBtn:focus-visible,
+.loginBtn:focus-visible {
+  outline: 3px solid #ffd08a;
+  outline-offset: 3px;
+}
+
+/* Mobile header: compact Book Now + hamburger, so the main action is one
+   tap away without opening the menu. Hidden on desktop. */
+.mobileActions {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobileCta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 1rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #ff8a1f, #ffa733);
+  color: #0b2552;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mobileCta:active {
+  transform: scale(0.97);
 }
 
 /* ─────────────────────────────────────────
@@ -325,6 +359,10 @@
 ───────────────────────────────────────── */
 .hamburger {
   display: none;              /* hidden on desktop */
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   background: none;
   color: #f97316;
   border: none;
@@ -414,13 +452,13 @@
 /* Mobile Book Now button */
 .mobileBookBtn {
   display: block;
-  background: linear-gradient(90deg, #ea580c, #f97316);
-  color: #fff;
+  background: linear-gradient(90deg, #ff8a1f, #ffa733);
+  color: #0b2552;
   text-align: center;
   text-decoration: none;
-  font-weight: 700;
-  padding: 0.7rem;
-  border-radius: 0.5rem;
+  font-weight: 800;
+  padding: 0.75rem;
+  border-radius: 9999px;
   margin-top: 0.5rem;
   transition: filter 0.2s;
 }
@@ -436,4 +474,5 @@
   .desktopLinks  { display: none; }
   .desktopRight  { display: none; }
   .hamburger     { display: flex; }
+  .mobileActions { display: flex; }
 }
