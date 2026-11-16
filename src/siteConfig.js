@@ -34,6 +34,7 @@ export const SITE_URL =
 export const BUSINESS = {
   name: "Best Driving School",
   legalName: "Best Driving School LLC", // confirmed via Stripe account registration
+  licenseNumber: "E1033", // driving school license number, shown in the footer and landing trust bar
   phone: SCHOOL_PHONE,
   phoneTel: SCHOOL_PHONE_TEL,
   email: "info@yourbds.com",

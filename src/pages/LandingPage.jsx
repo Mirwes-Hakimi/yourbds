@@ -369,7 +369,7 @@ export default function LandingPage() {
             <FaShieldAlt className={styles.trustIcon} aria-hidden="true" />
             <div>
               <strong>DMV-Approved</strong>
-              <span>Certified Instructors</span>
+              <span>License No. {BUSINESS.licenseNumber}</span>
             </div>
           </div>
           <div className={styles.trustItem}>

@@ -65,7 +65,19 @@
          to avoid two conflicting copies of the same schema. -->
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Plain-text fallback for crawlers that don't run JavaScript (e.g. Google
+         Ads phone/address checks). React replaces everything inside #root the
+         moment the app mounts, so real visitors never see this twice.
+         Keep in sync with src/siteConfig.js. -->
+    <div id="root">
+      <h1>Best Driving School LLC</h1>
+      <p>Behind-the-wheel driving lessons and DMV road test packages across the Bay Area and Sacramento.</p>
+      <p>Phone: <a href="tel:+15103620808">(510) 362-0808</a></p>
+      <p>Email: <a href="mailto:info@yourbds.com">info@yourbds.com</a></p>
+      <p>966 W Winton Ave Ste B, Hayward, CA 94545</p>
+      <p>Hours: Daily, 8:00 AM – 7:00 PM</p>
+      <p>License No. E1033</p>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
